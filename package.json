@@ -1,0 +1,6 @@
+{
+  "name": "AkiNardBlog",
+  "scripts": {
+    "build": "node generate-blog.js"
+  }
+}

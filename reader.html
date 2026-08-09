@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>阅读文章</title>
+  <script src="marked.min.js"></script>
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.5);
+      --text: #222;
+      --text-light: #555;
+      --link: #b55;
+      --tag-bg: rgba(0,0,0,0.06);
+      --tag-text: #444;
+      --border: rgba(128,128,128,0.2);
+      --code-bg: rgba(0,0,0,0.05);
+      --blockquote-bg: rgba(0,0,0,0.03);
+      --blockquote-border: #b55;
+    }
+    .dark {
+      --glass-bg: rgba(30, 30, 30, 0.5);
+      --text: #eee;
+      --text-light: #bbb;
+      --link: #cc7;
+      --tag-bg: rgba(255,255,255,0.1);
+      --tag-text: #ddd;
+      --border: rgba(255,255,255,0.15);
+      --code-bg: rgba(255,255,255,0.1);
+      --blockquote-bg: rgba(255,255,255,0.05);
+      --blockquote-border: #cc7;
+    }
+
+    body {
+      font-family: "Noto Serif SC", serif;
+      margin: 0;
+      padding: 20px;
+      background-image: url('https://api.komll.com/images');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      transition: background 0.5s, color 0.5s;
+      color: var(--text);
+    }
+
+    .glass-card {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px 24px;
+      border-radius: 24px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      transition: background 0.5s, color 0.5s;
+    }
+
+    .article-header { margin-bottom: 30px; }
+    .article-header h1 { margin: 0 0 8px; font-size: 28px; color: var(--text); }
+    .meta {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .tag {
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    /* Markdown 内容样式 */
+    .article-body {
+      line-height: 1.8;
+    }
+    .article-body h1, .article-body h2, .article-body h3,
+    .article-body h4, .article-body h5, .article-body h6 {
+      margin-top: 1.2em;
+      margin-bottom: 0.6em;
+      font-weight: 600;
+    }
+    .article-body h1 { font-size: 1.8em; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+    .article-body h2 { font-size: 1.5em; border-bottom: 1px solid var(--border); padding-bottom: 0.2em; }
+    .article-body h3 { font-size: 1.25em; }
+    .article-body p { margin: 0.8em 0; }
+    .article-body code {
+      font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace;
+      background: var(--code-bg);
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .article-body pre {
+      background: var(--code-bg);
+      padding: 16px;
+      border-radius: 12px;
+      overflow-x: auto;
+      line-height: 1.5;
+      margin: 1em 0;
+    }
+    .article-body pre code {
+      background: none;
+      padding: 0;
+      font-size: 0.9em;
+    }
+    .article-body blockquote {
+      margin: 1em 0;
+      padding: 12px 20px;
+      background: var(--blockquote-bg);
+      border-left: 4px solid var(--blockquote-border);
+      color: var(--text-light);
+      border-radius: 0 8px 8px 0;
+    }
+    .article-body mark {
+      background-color: #ffeb3b;
+      color: #000;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+    .dark .article-body mark {
+      background-color: #b59f00;
+      color: #fff;
+    }
+    .article-body img { max-width: 100%; border-radius: 8px; }
+    .article-body ul, .article-body ol { padding-left: 1.5em; }
+
+    /* 上下篇导航 */
+    .nav {
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav a { color: var(--link); text-decoration: none; }
+
+    .nav-titles {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+    .nav-title {
+      max-width: 45%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* 夜间模式按钮 */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(128,128,128,0.3);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+      color: var(--text);
+      transition: background 0.5s, color 0.5s, transform 0.2s;
+    }
+    .theme-toggle:active { transform: scale(0.9); }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="theme-toggle" aria-label="切换夜间模式">🌙</button>
+
+  <div class="glass-card">
+    <div class="article-header">
+      <h1 id="article-title">加载中...</h1>
+      <div class="meta" id="article-meta"></div>
+      <div class="tags" id="article-tags"></div>
+    </div>
+    <div class="article-body" id="article-body">加载中...</div>
+
+    <div class="nav">
+      <a id="prev-link" href="#">← 上一篇</a>
+      <a id="blog-link" href="blog.html">文章列表</a>
+      <a id="next-link" href="#">下一篇 →</a>
+    </div>
+    <div class="nav-titles">
+      <span id="prev-title" class="nav-title"></span>
+      <span id="next-title" class="nav-title"></span>
+    </div>
+  </div>
+
+  <script>
+    // 夜间模式
+    const toggleBtn = document.getElementById('theme-toggle');
+    const body = document.body;
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') body.classList.add('dark');
+    updateBtn();
+    toggleBtn.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
+      updateBtn();
+    });
+    function updateBtn() { toggleBtn.textContent = body.classList.contains('dark') ? '☀️' : '🌙'; }
+
+    // 获取文章 slug
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug');
+    const articleBody = document.getElementById('article-body');
+    if (!slug) {
+      articleBody.innerText = '缺少文章标识';
+    } else {
+      fetch('blog.json')
+        .then(res => res.json())
+        .then(posts => {
+          const index = posts.findIndex(p => p.slug === slug);
+          if (index === -1) throw new Error('文章未找到');
+          const post = posts[index];
+
+          // 标题和页面 title
+          document.getElementById('article-title').innerText = post.title;
+          document.title = post.title + " - AkiNard Blog";
+
+          const metaStr = [post.published, post.category].filter(Boolean).join(' · ');
+          document.getElementById('article-meta').innerText = metaStr;
+
+          const tagsContainer = document.getElementById('article-tags');
+          if (post.tags && post.tags.length) {
+            tagsContainer.innerHTML = post.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+          } else {
+            tagsContainer.innerHTML = '';
+          }
+
+          // 上下篇链接和标题
+          const prevLink = document.getElementById('prev-link');
+          const nextLink = document.getElementById('next-link');
+          const prevTitleEl = document.getElementById('prev-title');
+          const nextTitleEl = document.getElementById('next-title');
+
+          if (index > 0) {
+            const prev = posts[index - 1];
+            prevLink.href = `reader.html?slug=${encodeURIComponent(prev.slug)}`;
+            prevLink.style.display = '';
+            prevTitleEl.textContent = prev.title;
+          } else {
+            prevLink.style.display = 'none';
+            prevTitleEl.textContent = '';
+          }
+
+          if (index < posts.length - 1) {
+            const next = posts[index + 1];
+            nextLink.href = `reader.html?slug=${encodeURIComponent(next.slug)}`;
+            nextLink.style.display = '';
+            nextTitleEl.textContent = next.title;
+          } else {
+            nextLink.style.display = 'none';
+            nextTitleEl.textContent = '';
+          }
+
+          return fetch(post.file);
+        })
+        .then(res => {
+          if (!res.ok) throw new Error('文件加载失败');
+          return res.text();
+        })
+        .then(md => {
+          // 移除 frontmatter
+          const bodyContent = md.replace(/^---[\s\S]*?---\n*/, '');
+          articleBody.innerHTML = marked.parse(bodyContent);
+        })
+        .catch(err => {
+          articleBody.innerText = '文章加载失败：' + err.message;
+          document.getElementById('prev-link').style.display = 'none';
+          document.getElementById('next-link').style.display = 'none';
+          document.getElementById('prev-title').textContent = '';
+          document.getElementById('next-title').textContent = '';
+        });
+    }
+  </script>
+</body>
+</html>
