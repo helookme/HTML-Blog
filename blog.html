@@ -187,11 +187,12 @@
 
     document.getElementById('search').addEventListener('input', (e) => {
       const term = e.target.value.toLowerCase();
-      const filtered = allPosts.filter(p =>
-        p.title.toLowerCase().includes(term) ||
-        (p.description && p.description.toLowerCase().includes(term)) ||
-        (p.tags && p.tags.some(t => t.toLowerCase().includes(term)))
-      );
+const filtered = allPosts.filter(p =>
+  p.title.toLowerCase().includes(term) ||
+  (p.description && p.description.toLowerCase().includes(term)) ||
+  (p.tags && p.tags.some(t => t.toLowerCase().includes(term))) ||
+  (p.content && p.content.toLowerCase().includes(term))
+);
       renderPosts(filtered);
     });
   </script>
