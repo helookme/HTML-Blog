@@ -33,18 +33,6 @@
       align-items: center;
       justify-content: center;
       transition: background-color 0.5s, color 0.5s;
-      /* 页面切换动画 */
-      animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    @keyframes pageEnter {
-      from {
-        opacity: 0;
-        transform: scale(0.98);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
     }
 
     .glass-card {
@@ -60,6 +48,14 @@
       color: var(--text);
       transition: background 0.5s, color 0.5s, transform 0.3s, box-shadow 0.3s;
       text-align: center;
+
+      /* 页面切换动画现在在卡片上 */
+      opacity: 0;
+      transform: scale(0.98);
+      animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes pageEnter {
+      to { opacity: 1; transform: scale(1); }
     }
     .glass-card:hover {
       transform: translateY(-3px);
@@ -117,7 +113,7 @@
       color: var(--text-light);
       margin-bottom: 30px;
       line-height: 1.6;
-      min-height: 2em; /* 防止打字时高度跳动 */
+      min-height: 3em;
     }
 
     .btn {
@@ -171,7 +167,6 @@
       <img class="avatar" src="avatar.jpg" alt="头像">
       <span class="online-dot"></span>
     </div>
-    <!-- 签名区域改为空，由打字机填充 -->
     <p class="signature fade-up delay-2" id="typewriter"></p>
     <div class="fade-up delay-3">
       <a class="btn" href="blog.html">阅读博客</a>
@@ -210,7 +205,6 @@
         setTimeout(type, 60);
       }
     }
-    // 与元素出现动画同步，稍晚启动
     setTimeout(type, 300);
   </script>
 </body>
