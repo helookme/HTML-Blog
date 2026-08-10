@@ -10,7 +10,7 @@
   <meta property="og:title" content="文章列表 - AkiNard Blog">
   <meta property="og:description" content="世间万物不及你. 这里是 @SkyCeria 的个人博客。">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://你的域名.pages.dev/blog.html">
+  <meta property="og:url" content="https://test.578113.xyz/blog.html">
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="AkiNard Blog RSS" href="/rss.xml">
   <style>
@@ -23,6 +23,9 @@
       --tag-bg: rgba(0,0,0,0.06);
       --tag-text: #444;
       --border: rgba(128,128,128,0.2);
+      --pagination-bg: rgba(255,255,255,0.5);
+      --pagination-active: #b55;
+      --pagination-text: #555;
     }
     .dark {
       --glass-bg: rgba(30, 30, 30, 0.5);
@@ -33,6 +36,9 @@
       --tag-bg: rgba(255,255,255,0.1);
       --tag-text: #ddd;
       --border: rgba(255,255,255,0.15);
+      --pagination-bg: rgba(255,255,255,0.08);
+      --pagination-active: #cc7;
+      --pagination-text: #ccc;
     }
 
     body {
@@ -139,6 +145,61 @@
     }
     .tag:hover { transform: scale(1.1) rotate(-2deg); }
 
+    /* 分页 */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .pagination button,
+    .pagination .page-num {
+      min-width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--pagination-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      color: var(--pagination-text);
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pagination button:hover,
+    .pagination .page-num:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-color: var(--link);
+      color: var(--link);
+      background: var(--glass-bg);
+    }
+    .pagination button:active,
+    .pagination .page-num:active { transform: scale(0.96); }
+    .pagination .active {
+      background: var(--pagination-active);
+      color: #fff;
+      font-weight: 600;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .pagination .active:hover {
+      background: var(--pagination-active);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+      transform: translateY(-2px);
+    }
+    .pagination button:disabled {
+      opacity: 0.4;
+      cursor: default;
+      pointer-events: none;
+    }
+
     .theme-toggle {
       position: fixed;
       top: 20px;
@@ -166,6 +227,36 @@
       margin-top: 16px;
       color: var(--text-light);
     }
+
+    .footer-links {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+    .footer-links a { color: var(--text-light); text-decoration: none; margin: 0 12px; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--link); }
+
+    /* Umami 统计卡片 */
+    .umami-stats-glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 18px;
+      margin-top: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    .umami-stats-container { text-align: center; color: var(--text); }
+    .umami-stats-header { font-weight: 600; margin-bottom: 12px; font-size: 14px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }
+    .umami-stats-total { padding-bottom: 12px; margin-bottom: 8px; }
+    .umami-stat-number { font-weight: 700; line-height: 1.2; }
+    .umami-stat-label { font-size: 0.875rem; color: var(--text-light); margin-top: 2px; }
+    .umami-stats-bottom { display: flex; justify-content: center; border-top: 1px solid rgba(128,128,128,0.2); padding-top: 12px; }
+    .umami-stat-item { flex: 1; padding: 0 12px; }
+    .umami-stat-item:first-child { border-right: 1px solid rgba(128,128,128,0.2); }
+    .dark .umami-stats-bottom,
+    .dark .umami-stat-item:first-child { border-color: rgba(255,255,255,0.15); }
   </style>
 </head>
 <body>
@@ -175,7 +266,34 @@
     <h1>文章列表</h1>
     <input type="text" class="search-box" id="search" placeholder="搜索标题、描述或标签...">
     <div id="posts-container">加载中...</div>
+    <div class="pagination" id="pagination"></div>
     <a class="back-link" href="index.html">← 返回首页</a>
+
+    <!-- Umami 统计卡片 -->
+    <div class="umami-stats-glass">
+      <div class="umami-stats-container">
+        <div class="umami-stats-header">统计</div>
+        <div class="umami-stats-total">
+          <div id="total-pageviews" class="umami-stat-number" style="font-size: 1.875rem;">-</div>
+          <div class="umami-stat-label">总浏览量</div>
+        </div>
+        <div class="umami-stats-bottom">
+          <div class="umami-stat-item">
+            <div id="total-visits" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
+            <div class="umami-stat-label">访问数</div>
+          </div>
+          <div class="umami-stat-item">
+            <div id="total-visitors" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
+            <div class="umami-stat-label">游客数</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <a href="/sitemap.xml">Sitemap</a>
+      <a href="/rss.xml">RSS</a>
+    </div>
   </div>
 
   <script>
@@ -191,45 +309,95 @@
     });
     function updateBtn() { toggleBtn.textContent = body.classList.contains('dark') ? '☀️' : '🌙'; }
 
+    const POSTS_PER_PAGE = 5;
     let allPosts = [];
+    let currentPage = 1;
+    let filteredPosts = [];
+
     fetch('blog.json')
       .then(res => res.json())
       .then(posts => {
         allPosts = posts;
-        renderPosts(posts);
+        filteredPosts = [...allPosts];
+        goToPage(1);
       })
-      .catch(() => {
-        document.getElementById('posts-container').innerText = '加载文章失败';
-      });
+      .catch(() => { document.getElementById('posts-container').innerText = '加载文章失败'; });
 
-    function renderPosts(posts) {
+    function renderPosts(posts, page) {
       const container = document.getElementById('posts-container');
       if (posts.length === 0) {
         container.innerHTML = '<p>没有找到文章</p>';
+        document.getElementById('pagination').innerHTML = '';
         return;
       }
-      container.innerHTML = posts.map((post, i) => `
+      const start = (page - 1) * POSTS_PER_PAGE;
+      const pagePosts = posts.slice(start, start + POSTS_PER_PAGE);
+      container.innerHTML = pagePosts.map((post, i) => `
         <div class="post-card" style="animation-delay: ${i * 0.1}s">
           <h2><a href="reader.html?slug=${encodeURIComponent(post.slug)}">${post.title}</a></h2>
           <div class="post-meta">${post.published || ''} · ${post.category || ''}</div>
           ${post.description ? `<div class="post-desc">${post.description}</div>` : ''}
-          ${post.tags && post.tags.length ? `
-            <div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
-          ` : ''}
+          ${post.tags && post.tags.length ? `<div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
         </div>
       `).join('');
     }
 
+    function renderPagination(totalItems) {
+      const paginationEl = document.getElementById('pagination');
+      const totalPages = Math.ceil(totalItems / POSTS_PER_PAGE);
+      if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
+      let html = '';
+      html += `<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<span class="page-num ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</span>`;
+      }
+      html += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>›</button>`;
+      paginationEl.innerHTML = html;
+    }
+
+    window.goToPage = function(page) {
+      currentPage = page;
+      renderPosts(filteredPosts, currentPage);
+      renderPagination(filteredPosts.length);
+    };
+
     document.getElementById('search').addEventListener('input', (e) => {
       const term = e.target.value.toLowerCase();
-      const filtered = allPosts.filter(p =>
+      filteredPosts = allPosts.filter(p =>
         p.title.toLowerCase().includes(term) ||
         (p.description && p.description.toLowerCase().includes(term)) ||
         (p.tags && p.tags.some(t => t.toLowerCase().includes(term))) ||
         (p.content && p.content.toLowerCase().includes(term))
       );
-      renderPosts(filtered);
+      currentPage = 1;
+      renderPosts(filteredPosts, currentPage);
+      renderPagination(filteredPosts.length);
     });
+
+    // Umami 统计 (与首页相同)
+    const UMAMI_CONFIG = {
+      baseUrl: 'http://umami.578113.xyz/api',
+      websiteId: 'd72bd4ca-e496-42b7-ae65-13424856f679',
+      shareToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3ZWJzaXRlSWQiOiJkNzJiZDRjYS1lNDk2LTQyYjctYWU2NS0xMzQyNDg1NmY2NzkiLCJpYXQiOjE3ODYwOTE3ODJ9.NxnoEMp0VPSdxLdVYmuSBeAfODvWTfazF7L1lalvlLg'
+    };
+    function formatNumber(num) {
+      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+      return num.toString();
+    }
+    async function fetchUmamiStats() {
+      try {
+        const endAt = Date.now();
+        const url = `${UMAMI_CONFIG.baseUrl}/websites/${UMAMI_CONFIG.websiteId}/stats?startAt=0&endAt=${endAt}&unit=hour&timezone=Asia%2FShanghai`;
+        const resp = await fetch(url, { headers: { 'accept': 'application/json', 'x-umami-share-token': UMAMI_CONFIG.shareToken } });
+        const data = await resp.json();
+        document.getElementById('total-pageviews').textContent = formatNumber(data.pageviews || 0);
+        document.getElementById('total-visits').textContent = formatNumber(data.visits || 0);
+        document.getElementById('total-visitors').textContent = formatNumber(data.visitors || 0);
+      } catch (e) { console.error(e); }
+    }
+    document.addEventListener('DOMContentLoaded', fetchUmamiStats);
+    if (window.swup) window.swup.hooks.on('page:view', fetchUmamiStats);
   </script>
 </body>
 </html>

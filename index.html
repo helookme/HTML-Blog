@@ -10,7 +10,7 @@
   <meta property="og:title" content="AkiNard Blog">
   <meta property="og:description" content="世间万物不及你. 这里是 @SkyCeria 的个人博客。">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://你的域名.pages.dev">
+  <meta property="og:url" content="https://test.578113.xyz">
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="AkiNard Blog RSS" href="/rss.xml">
   <style>
@@ -161,6 +161,74 @@
       transition: all 0.4s ease;
     }
     .theme-toggle:active { transform: scale(0.9) rotate(90deg); }
+
+    .footer-links {
+      margin-top: 30px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+    .footer-links a {
+      color: var(--text-light);
+      text-decoration: none;
+      margin: 0 12px;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--btn-bg); }
+
+    /* Umami 统计卡片样式 */
+    .umami-stats-glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 18px;
+      margin-top: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      transition: background 0.5s;
+    }
+    .umami-stats-container {
+      text-align: center;
+      color: var(--text);
+    }
+    .umami-stats-header {
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .umami-stats-total {
+      padding-bottom: 12px;
+      margin-bottom: 8px;
+    }
+    .umami-stat-number {
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .umami-stat-label {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      margin-top: 2px;
+    }
+    .umami-stats-bottom {
+      display: flex;
+      justify-content: center;
+      border-top: 1px solid rgba(128,128,128,0.2);
+      padding-top: 12px;
+      gap: 0;
+    }
+    .umami-stat-item {
+      flex: 1;
+      padding: 0 12px;
+    }
+    .umami-stat-item:first-child {
+      border-right: 1px solid rgba(128,128,128,0.2);
+    }
+    .dark .umami-stats-bottom,
+    .dark .umami-stat-item:first-child {
+      border-color: rgba(255,255,255,0.15);
+    }
   </style>
 </head>
 <body>
@@ -176,6 +244,32 @@
       <a class="btn" href="blog.html">阅读博客</a>
       <a class="btn" href="friends.html">友情链接</a>
     </div>
+
+    <!-- Umami 统计卡片 -->
+    <div class="umami-stats-glass">
+      <div class="umami-stats-container">
+        <div class="umami-stats-header">统计</div>
+        <div class="umami-stats-total">
+          <div id="total-pageviews" class="umami-stat-number" style="font-size: 1.875rem;">-</div>
+          <div class="umami-stat-label">总浏览量</div>
+        </div>
+        <div class="umami-stats-bottom">
+          <div class="umami-stat-item">
+            <div id="total-visits" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
+            <div class="umami-stat-label">访问数</div>
+          </div>
+          <div class="umami-stat-item">
+            <div id="total-visitors" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
+            <div class="umami-stat-label">游客数</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <a href="/sitemap.xml">Sitemap</a>
+      <a href="/rss.xml">RSS</a>
+    </div>
   </div>
 
   <script>
@@ -190,9 +284,7 @@
       localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
       updateBtn();
     });
-    function updateBtn() {
-      toggleBtn.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
-    }
+    function updateBtn() { toggleBtn.textContent = body.classList.contains('dark') ? '☀️' : '🌙'; }
 
     // 打字机效果
     const text = "世间万物不及你.\n这里是 @SkyCeria 的个人博客。";
@@ -200,16 +292,44 @@
     let i = 0;
     function type() {
       if (i < text.length) {
-        if (text[i] === '\n') {
-          el.innerHTML += '<br>';
-        } else {
-          el.innerHTML += text[i];
-        }
+        if (text[i] === '\n') el.innerHTML += '<br>';
+        else el.innerHTML += text[i];
         i++;
         setTimeout(type, 60);
       }
     }
     setTimeout(type, 300);
+
+    // Umami 统计
+    const UMAMI_CONFIG = {
+      baseUrl: 'http://umami.578113.xyz/api',
+      websiteId: 'd72bd4ca-e496-42b7-ae65-13424856f679',
+      shareToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3ZWJzaXRlSWQiOiJkNzJiZDRjYS1lNDk2LTQyYjctYWU2NS0xMzQyNDg1NmY2NzkiLCJpYXQiOjE3ODYwOTE3ODJ9.NxnoEMp0VPSdxLdVYmuSBeAfODvWTfazF7L1lalvlLg'
+    };
+    function formatNumber(num) {
+      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+      return num.toString();
+    }
+    async function fetchUmamiStats() {
+      try {
+        const endAt = Date.now();
+        const url = `${UMAMI_CONFIG.baseUrl}/websites/${UMAMI_CONFIG.websiteId}/stats?startAt=0&endAt=${endAt}&unit=hour&timezone=Asia%2FShanghai`;
+        const resp = await fetch(url, { headers: { 'accept': 'application/json', 'x-umami-share-token': UMAMI_CONFIG.shareToken } });
+        const data = await resp.json();
+        document.getElementById('total-pageviews').textContent = formatNumber(data.pageviews || 0);
+        document.getElementById('total-visits').textContent = formatNumber(data.visits || 0);
+        document.getElementById('total-visitors').textContent = formatNumber(data.visitors || 0);
+      } catch (e) {
+        console.error(e);
+        ['total-pageviews', 'total-visits', 'total-visitors'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = '获取失败';
+        });
+      }
+    }
+    document.addEventListener('DOMContentLoaded', fetchUmamiStats);
+    if (window.swup) window.swup.hooks.on('page:view', fetchUmamiStats);
   </script>
 </body>
 </html>
