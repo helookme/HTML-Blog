@@ -37,11 +37,6 @@
       min-height: 100vh;
       transition: background 0.5s, color 0.5s;
       color: var(--text);
-      animation: fadeIn 0.6s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
     }
 
     .glass-card {
@@ -82,7 +77,6 @@
     }
     .search-box::placeholder { color: var(--text-light); }
 
-    /* 文章卡片依次出现 */
     .post-card {
       background: var(--card-bg);
       backdrop-filter: blur(10px);
@@ -126,7 +120,10 @@
       padding: 2px 12px;
       border-radius: 12px;
       font-size: 12px;
-      transition: background 0.5s, color 0.5s;
+      transition: background 0.5s, color 0.5s, transform 0.2s;
+    }
+    .tag:hover {
+      transform: scale(1.1) rotate(-2deg);
     }
 
     .theme-toggle {
@@ -198,7 +195,6 @@
         container.innerHTML = '<p>没有找到文章</p>';
         return;
       }
-      // 为每个卡片设置递增的动画延迟
       container.innerHTML = posts.map((post, i) => `
         <div class="post-card" style="animation-delay: ${i * 0.1}s">
           <h2><a href="reader.html?slug=${encodeURIComponent(post.slug)}">${post.title}</a></h2>

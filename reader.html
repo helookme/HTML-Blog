@@ -42,11 +42,6 @@
       min-height: 100vh;
       transition: background 0.5s, color 0.5s;
       color: var(--text);
-      animation: fadeIn 0.6s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
     }
 
     .glass-card {
@@ -79,10 +74,11 @@
       padding: 2px 12px;
       border-radius: 12px;
       font-size: 12px;
-      transition: background 0.5s, color 0.5s;
+      transition: background 0.5s, color 0.5s, transform 0.2s;
     }
+    .tag:hover { transform: scale(1.1) rotate(-2deg); }
 
-    /* Markdown 内容样式 */
+    /* Markdown 正文 */
     .article-body {
       line-height: 1.8;
     }
@@ -104,7 +100,6 @@
     @keyframes fadeUp {
       to { opacity: 1; transform: translateY(0); }
     }
-    /* 段落依次出现 */
     .article-body p:nth-child(1) { animation-delay: 0.1s; }
     .article-body p:nth-child(2) { animation-delay: 0.2s; }
     .article-body p:nth-child(3) { animation-delay: 0.3s; }
@@ -115,7 +110,6 @@
     .article-body p:nth-child(8) { animation-delay: 0.8s; }
     .article-body p:nth-child(9) { animation-delay: 0.9s; }
     .article-body p:nth-child(10) { animation-delay: 1.0s; }
-    /* 超过10个段落自动继续 */
     .article-body p:nth-child(n+11) { animation-delay: 1.1s; }
 
     .article-body code {
@@ -164,7 +158,6 @@
     }
     .article-body img:hover { transform: scale(1.02); }
     .article-body ul, .article-body ol { padding-left: 1.5em; }
-    /* 链接下划线动画 */
     .article-body a {
       background-image: linear-gradient(currentColor, currentColor);
       background-position: 0% 100%;
@@ -182,7 +175,7 @@
       display: flex;
       justify-content: space-between;
     }
-    .nav a { color: var(--link); text-decoration: none; transition: color 0.3s; }
+    .nav a { color: var(--link); text-decoration: none; }
     .nav-titles {
       display: flex;
       justify-content: space-between;
@@ -255,7 +248,6 @@
     });
     function updateBtn() { toggleBtn.textContent = body.classList.contains('dark') ? '☀️' : '🌙'; }
 
-    // 获取文章 slug
     const params = new URLSearchParams(window.location.search);
     const slug = params.get('slug');
     const articleBody = document.getElementById('article-body');
@@ -269,7 +261,6 @@
           if (index === -1) throw new Error('文章未找到');
           const post = posts[index];
 
-          // 标题和页面 title
           document.getElementById('article-title').innerText = post.title;
           document.title = post.title + " - AkiNard Blog";
 
@@ -283,7 +274,6 @@
             tagsContainer.innerHTML = '';
           }
 
-          // 上下篇链接和标题
           const prevLink = document.getElementById('prev-link');
           const nextLink = document.getElementById('next-link');
           const prevTitleEl = document.getElementById('prev-title');
@@ -317,7 +307,6 @@
         })
         .then(md => {
           marked.setOptions({ breaks: true, gfm: true });
-          // 移除 frontmatter
           const bodyContent = md.replace(/^---[\s\S]*?---\n*/, '');
           articleBody.innerHTML = marked.parse(bodyContent);
         })
