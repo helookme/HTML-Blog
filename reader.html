@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>阅读文章</title>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- SEO -->
+  <meta name="description" content="AkiNard Blog - 世间万物不及你. 这里是 @SkyCeria 的个人博客。">
+  <meta name="keywords" content="博客,个人博客,技术,生活">
+  <meta property="og:title" content="阅读文章 - AkiNard Blog">
+  <meta property="og:description" content="AkiNard Blog 文章">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="">
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="AkiNard Blog RSS" href="/rss.xml">
   <style>
     :root {
       --glass-bg: rgba(255, 255, 255, 0.5);
@@ -54,7 +63,6 @@
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 8px 32px rgba(0,0,0,0.1);
       transition: background 0.5s, transform 0.3s, box-shadow 0.3s;
-      /* 页面切换动画 */
       opacity: 0;
       transform: scale(0.98);
       animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -85,7 +93,6 @@
     }
     .tag:hover { transform: scale(1.1) rotate(-2deg); }
 
-    /* Markdown 正文样式 */
     .article-body {
       line-height: 1.8;
     }
@@ -176,7 +183,6 @@
     }
     .article-body a:hover { background-size: 100% 1px; }
 
-    /* 上下篇导航 */
     .nav {
       margin-top: 40px;
       display: flex;
@@ -255,7 +261,6 @@
     });
     function updateBtn() { toggleBtn.textContent = body.classList.contains('dark') ? '☀️' : '🌙'; }
 
-    // 获取文章 slug
     const params = new URLSearchParams(window.location.search);
     const slug = params.get('slug');
     const articleBody = document.getElementById('article-body');
@@ -271,6 +276,10 @@
 
           document.getElementById('article-title').innerText = post.title;
           document.title = post.title + " - AkiNard Blog";
+          // 动态设置 OG 标签
+          document.querySelector('meta[property="og:title"]').setAttribute('content', post.title + ' - AkiNard Blog');
+          document.querySelector('meta[property="og:description"]').setAttribute('content', post.description || '');
+          document.querySelector('meta[property="og:url"]').setAttribute('content', window.location.href);
 
           const metaStr = [post.published, post.category].filter(Boolean).join(' · ');
           document.getElementById('article-meta').innerText = metaStr;

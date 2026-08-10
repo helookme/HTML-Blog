@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>文章列表 - AkiNard Blog</title>
+  <!-- SEO -->
+  <meta name="description" content="AkiNard Blog - 世间万物不及你. 这里是 @SkyCeria 的个人博客。">
+  <meta name="keywords" content="博客,个人博客,技术,生活">
+  <meta property="og:title" content="文章列表 - AkiNard Blog">
+  <meta property="og:description" content="世间万物不及你. 这里是 @SkyCeria 的个人博客。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://你的域名.pages.dev/blog.html">
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="AkiNard Blog RSS" href="/rss.xml">
   <style>
     :root {
       --glass-bg: rgba(255, 255, 255, 0.5);
@@ -49,7 +58,6 @@
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 8px 32px rgba(0,0,0,0.1);
       transition: background 0.5s, transform 0.3s, box-shadow 0.3s;
-      /* 页面切换动画 */
       opacity: 0;
       transform: scale(0.98);
       animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
