@@ -7,7 +7,7 @@
   <style>
     :root {
       --glass-bg: rgba(255, 255, 255, 0.5);
-      --card-bg: rgba(255, 255, 255, 0.6);
+      --card-bg: rgba(255, 255, 255, 0.4);
       --text: #222;
       --text-light: #555;
       --link: #b55;
@@ -17,7 +17,7 @@
     }
     .dark {
       --glass-bg: rgba(30, 30, 30, 0.5);
-      --card-bg: rgba(50, 50, 50, 0.6);
+      --card-bg: rgba(50, 50, 50, 0.4);
       --text: #eee;
       --text-light: #bbb;
       --link: #cc7;
@@ -37,6 +37,11 @@
       min-height: 100vh;
       transition: background 0.5s, color 0.5s;
       color: var(--text);
+      animation: fadeIn 0.6s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .glass-card {
@@ -48,7 +53,11 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-      transition: background 0.5s, color 0.5s;
+      transition: background 0.5s, transform 0.3s, box-shadow 0.3s;
+    }
+    .glass-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
     }
 
     h1 { text-align: center; margin-top: 0; }
@@ -64,10 +73,16 @@
       margin-bottom: 24px;
       box-sizing: border-box;
       backdrop-filter: blur(8px);
-      transition: background 0.5s, border-color 0.5s, color 0.5s;
+      transition: background 0.5s, border-color 0.5s, box-shadow 0.3s;
+    }
+    .search-box:focus {
+      outline: none;
+      border-color: var(--link);
+      box-shadow: 0 0 0 3px rgba(181, 85, 85, 0.2);
     }
     .search-box::placeholder { color: var(--text-light); }
 
+    /* 文章卡片依次出现 */
     .post-card {
       background: var(--card-bg);
       backdrop-filter: blur(10px);
@@ -76,7 +91,17 @@
       border-radius: 16px;
       padding: 18px;
       margin-bottom: 16px;
-      transition: background 0.5s, border-color 0.5s;
+      transition: background 0.5s, border-color 0.5s, transform 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.5s forwards;
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .post-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
     }
     .post-card h2 { margin: 0 0 6px; font-size: 20px; }
     .post-card h2 a { color: var(--link); text-decoration: none; }
@@ -121,9 +146,9 @@
       justify-content: center;
       z-index: 1001;
       color: var(--text);
-      transition: background 0.5s, color 0.5s, transform 0.2s;
+      transition: all 0.4s ease;
     }
-    .theme-toggle:active { transform: scale(0.9); }
+    .theme-toggle:active { transform: scale(0.9) rotate(90deg); }
 
     a.back-link {
       display: block;
@@ -173,8 +198,9 @@
         container.innerHTML = '<p>没有找到文章</p>';
         return;
       }
-      container.innerHTML = posts.map(post => `
-        <div class="post-card">
+      // 为每个卡片设置递增的动画延迟
+      container.innerHTML = posts.map((post, i) => `
+        <div class="post-card" style="animation-delay: ${i * 0.1}s">
           <h2><a href="reader.html?slug=${encodeURIComponent(post.slug)}">${post.title}</a></h2>
           <div class="post-meta">${post.published || ''} · ${post.category || ''}</div>
           ${post.description ? `<div class="post-desc">${post.description}</div>` : ''}
@@ -187,12 +213,12 @@
 
     document.getElementById('search').addEventListener('input', (e) => {
       const term = e.target.value.toLowerCase();
-const filtered = allPosts.filter(p =>
-  p.title.toLowerCase().includes(term) ||
-  (p.description && p.description.toLowerCase().includes(term)) ||
-  (p.tags && p.tags.some(t => t.toLowerCase().includes(term))) ||
-  (p.content && p.content.toLowerCase().includes(term))
-);
+      const filtered = allPosts.filter(p =>
+        p.title.toLowerCase().includes(term) ||
+        (p.description && p.description.toLowerCase().includes(term)) ||
+        (p.tags && p.tags.some(t => t.toLowerCase().includes(term))) ||
+        (p.content && p.content.toLowerCase().includes(term))
+      );
       renderPosts(filtered);
     });
   </script>

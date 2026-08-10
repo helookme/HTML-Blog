@@ -1,0 +1,74 @@
+[
+     {
+    name: "依凌の手册",
+    url: "https://blog.hanahime.online",
+    avatar: "https://image.578113.xyz/img/friend1.png",
+    description: "某个笨蛋的站点",
+  },
+    {
+    name: "Ad_closeNN 的小站",
+    url: "https://blog.adclosenn.top",
+    avatar: "https://blog.adclosenn.top/assets/avatar.jpg",
+    description: "Ad_closeNN 的小站，时不时会刷新一些野生东西",
+  },
+  {
+    name: "AcoFork Blog",
+    url: "https://2x.nz",
+    avatar: "https://q2.qlogo.cn/headimg_dl?dst_uin=2726730791&spec=0",
+    description: "Protect What You Love",
+  },
+    {
+    name: "Codfish Blog",
+    url: "https://codfish.top",
+    avatar: "https://codfish.top/favicon.ico",
+    description: "🐟🐟🐟",
+  },
+  {
+    name: "AlexMa's Blog",
+    url: "https://blog.alexma.top/",
+    avatar: "https://imgproxy.alexma.top/XXKGpBkD10-GDrWn5b8asJspKs16xZz2AUxQE9VY4pI/rs:fit:512:512/f:webp/q:80/plain/s3://blog-pics/avatar.webp",
+    description: "Create things with love.",
+  },
+  {
+    name: "Arcwolf Blog",
+    url: "https://www.arcwolf.top",
+    avatar: "https://www.arcwolf.top/assets/home/28.png",
+    description: "Nothing.",
+  },
+  {
+    name: "Yourlai Blog",
+    url: "https://yourlai.icu",
+    avatar: "https://cdn.cdn.yourlai.icu/img/logo/ava.png",
+    description: "无 bug 是理想，调设备是日常",
+  },
+  {
+    name: "UpXuu's Blog",
+    url: "https://upxuu.com",
+    avatar: "https://upxuu.com/images/20260214145619.jpg",
+    description: "逐光而上！",
+  },
+  {
+    name: "爱吃猫的鱼",
+    url: "https://blog.talen.top",
+    avatar: "https://image.talen.top/20251229184705_wgsva7g9.png",
+    description: "前景可待 未来可期",
+  },
+  {
+    name: "水月的小窝",
+    url: "https://chuishui.top",
+    avatar: "https://esaimg.cdn1.vip/i/69f849450ed4c_1777879365.webp",
+    description: "没有人是笨蛋，大家都只会对喜欢的人用心",
+  },
+  {
+    name: "MoGuQAQ's Blog",
+    url: "https://blog.moguq.top",
+    avatar: "https://avatars.githubusercontent.com/u/67809394",
+    description: "---占位---",
+  },
+  {
+    name: "流欺の博客",
+    url: "https://blog.lqay.cn",
+    avatar: "https://tc.lqay.cn/LightPicture/2026/03/5f64e0f0f361e19c.png",
+    description: "嗯对就是个博客",
+  }
+],
