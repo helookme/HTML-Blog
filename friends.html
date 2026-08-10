@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>友链 - AkiNard Blog</title>
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.5);
+      --text: #222;
+      --text-light: #555;
+      --border: rgba(128,128,128,0.2);
+      --card-bg: rgba(255, 255, 255, 0.4);
+    }
+    .dark {
+      --glass-bg: rgba(30, 30, 30, 0.5);
+      --text: #eee;
+      --text-light: #bbb;
+      --border: rgba(255,255,255,0.15);
+      --card-bg: rgba(50, 50, 50, 0.4);
+    }
+
+    body {
+      font-family: "Noto Serif SC", serif;
+      margin: 0;
+      padding: 20px;
+      background-image: url('https://api.komll.com/images');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      transition: background 0.5s, color 0.5s;
+      color: var(--text);
+    }
+
+    .glass-card {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 24px;
+      border-radius: 24px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      transition: background 0.5s;
+    }
+
+    h1 { text-align: center; margin-top: 0; }
+
+    /* 友链列表 */
+    .friend-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .friend-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 12px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      background: var(--card-bg);
+    }
+    .friend-item:last-child {
+      border-bottom: none;
+    }
+
+    .friend-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 16px;
+      flex-shrink: 0;
+      border: 2px solid var(--border);
+    }
+
+    .friend-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .friend-name {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      margin-bottom: 4px;
+    }
+    .friend-name:hover {
+      text-decoration: underline;
+    }
+
+    .friend-desc {
+      font-size: 14px;
+      color: var(--text-light);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* 夜间模式按钮 */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(128,128,128,0.3);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+      color: var(--text);
+      transition: background 0.5s, color 0.5s, transform 0.2s;
+    }
+    .theme-toggle:active { transform: scale(0.9); }
+
+    a.back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--text-light);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="theme-toggle" aria-label="切换夜间模式">🌙</button>
+
+  <div class="glass-card">
+    <h1>朋友们</h1>
+    <ul class="friend-list" id="friend-list"></ul>
+    <a class="back-link" href="index.html">← 返回首页</a>
+  </div>
+
+  <script>
+    // 夜间模式（无涟漪）
+    const toggleBtn = document.getElementById('theme-toggle');
+    const body = document.body;
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') body.classList.add('dark');
+    updateBtn();
+    toggleBtn.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
+      updateBtn();
+    });
+    function updateBtn() { toggleBtn.textContent = body.classList.contains('dark') ? '☀️' : '🌙'; }
+
+    // 加载友链
+    fetch('friends.json')
+      .then(res => res.json())
+      .then(friends => {
+        const list = document.getElementById('friend-list');
+        if (friends.length === 0) {
+          list.innerHTML = '<li style="text-align:center; color: var(--text-light);">暂无友链</li>';
+          return;
+        }
+        list.innerHTML = friends.map(f => `
+          <li class="friend-item">
+            <img class="friend-avatar" src="${f.avatar}" alt="${f.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23ddd%22/%3E%3C/svg%3E'">
+            <div class="friend-info">
+              <a class="friend-name" href="${f.url}" target="_blank" rel="noopener">${f.name}</a>
+              <div class="friend-desc">${f.description || ''}</div>
+            </div>
+          </li>
+        `).join('');
+      })
+      .catch(() => {
+        document.getElementById('friend-list').innerHTML = '<li style="text-align:center; color: var(--text-light);">加载失败</li>';
+      });
+  </script>
+</body>
+</html>
