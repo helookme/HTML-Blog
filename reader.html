@@ -11,10 +11,12 @@
   <meta property="og:title" content="阅读文章 - AkiNard Blog">
   <meta property="og:description" content="AkiNard Blog 文章">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="">
+  <meta property="og:url" content="https://test.578113.xyz/reader.html">
+  <!-- og:url 会在文章加载后由 JS 更新为实际地址 -->
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="AkiNard Blog RSS" href="/rss.xml">
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
     :root {
       --glass-bg: rgba(255, 255, 255, 0.5);
       --text: #222;
@@ -26,6 +28,7 @@
       --code-bg: rgba(0,0,0,0.05);
       --blockquote-bg: rgba(0,0,0,0.03);
       --blockquote-border: #b55;
+      --bg: #f5f5f7;
     }
     .dark {
       --glass-bg: rgba(30, 30, 30, 0.5);
@@ -38,12 +41,14 @@
       --code-bg: rgba(255,255,255,0.1);
       --blockquote-bg: rgba(255,255,255,0.05);
       --blockquote-border: #cc7;
+      --bg: #1c1c22;
     }
 
     body {
-      font-family: "Noto Serif SC", serif;
+      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", serif;
       margin: 0;
       padding: 20px;
+      background-color: var(--bg, #f5f5f7);
       background-image: url('https://api.komll.com/images');
       background-size: cover;
       background-position: center;
@@ -63,11 +68,11 @@
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 8px 32px rgba(0,0,0,0.1);
       transition: background 0.5s, transform 0.3s, box-shadow 0.3s;
-      opacity: 0;
-      transform: scale(0.98);
-      animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 1;
+      transform: scale(1);
+      animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     }
-    @keyframes pageEnter { to { opacity: 1; transform: scale(1); } }
+    @keyframes pageEnter { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
     .glass-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
 
     .article-header { margin-bottom: 30px; }
@@ -99,22 +104,22 @@
     .article-body h3 { font-size: 1.25em; }
     .article-body p {
       margin: 0.8em 0;
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeUp 0.4s forwards;
+      opacity: 1;
+      transform: none;
+      animation: fadeUp 0.4s backwards;
     }
-    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-    .article-body p:nth-child(1) { animation-delay: 0.1s; }
-    .article-body p:nth-child(2) { animation-delay: 0.2s; }
-    .article-body p:nth-child(3) { animation-delay: 0.3s; }
-    .article-body p:nth-child(4) { animation-delay: 0.4s; }
-    .article-body p:nth-child(5) { animation-delay: 0.5s; }
-    .article-body p:nth-child(6) { animation-delay: 0.6s; }
-    .article-body p:nth-child(7) { animation-delay: 0.7s; }
-    .article-body p:nth-child(8) { animation-delay: 0.8s; }
-    .article-body p:nth-child(9) { animation-delay: 0.9s; }
-    .article-body p:nth-child(10) { animation-delay: 1.0s; }
-    .article-body p:nth-child(n+11) { animation-delay: 1.1s; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .article-body p:nth-of-type(1) { animation-delay: 0.1s; }
+    .article-body p:nth-of-type(2) { animation-delay: 0.2s; }
+    .article-body p:nth-of-type(3) { animation-delay: 0.3s; }
+    .article-body p:nth-of-type(4) { animation-delay: 0.4s; }
+    .article-body p:nth-of-type(5) { animation-delay: 0.5s; }
+    .article-body p:nth-of-type(6) { animation-delay: 0.6s; }
+    .article-body p:nth-of-type(7) { animation-delay: 0.7s; }
+    .article-body p:nth-of-type(8) { animation-delay: 0.8s; }
+    .article-body p:nth-of-type(9) { animation-delay: 0.9s; }
+    .article-body p:nth-of-type(10) { animation-delay: 1.0s; }
+    .article-body p:nth-of-type(n+11) { animation-delay: 1.1s; }
 
     .article-body code {
       font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace;
@@ -213,9 +218,35 @@
     .umami-stat-item:first-child { border-right: 1px solid rgba(128,128,128,0.2); }
     .dark .umami-stats-bottom,
     .dark .umami-stat-item:first-child { border-color: rgba(255,255,255,0.15); }
+
+    /* 移动端：缩短页边距、卡片加宽，背景改为随页面滚动 */
+    @media (max-width: 480px) {
+      body { padding: 12px; }
+      .glass-card { width: 100%; margin: 16px auto; padding: 24px 16px; }
+    }
+
+    /* 触屏设备：去掉悬停位移带来的粘滞感 */
+    @media (hover: none), (pointer: coarse) {
+      .glass-card:hover, .tag:hover, .article-body a:hover,
+      .article-body img:hover, .footer-links a:hover {
+        transform: none !important;
+      }
+    }
+
+    /* 减弱动态效果：禁用动画并确保内容可见 */
+    @media (prefers-reduced-motion: reduce) {
+      .glass-card, .article-body p, .tag, .nav a, .article-body img {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
   </style>
 </head>
 <body>
+  <noscript>
+    <div style="position:fixed;left:0;right:0;top:0;z-index:9999;background:#b55;color:#fff;text-align:center;padding:8px;font-size:13px;">本站内容依赖 JavaScript 渲染，请启用 JavaScript 后再访问。</div>
+  </noscript>
   <button class="theme-toggle" id="theme-toggle" aria-label="切换夜间模式">🌙</button>
 
   <div class="glass-card">
@@ -282,6 +313,7 @@
     const articleBody = document.getElementById('article-body');
     if (!slug) {
       articleBody.innerText = '缺少文章标识';
+      document.getElementById('article-title').innerText = '文章加载失败';
     } else {
       fetch('blog.json')
         .then(res => res.json())
@@ -336,6 +368,9 @@
         })
         .catch(err => {
           articleBody.innerText = '文章加载失败：' + err.message;
+          document.getElementById('article-title').innerText = '文章加载失败';
+          document.getElementById('article-meta').innerText = '';
+          document.getElementById('article-tags').innerHTML = '';
           document.getElementById('prev-link').style.display = 'none';
           document.getElementById('next-link').style.display = 'none';
           document.getElementById('prev-title').textContent = '';

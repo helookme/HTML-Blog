@@ -14,12 +14,15 @@
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="AkiNard Blog RSS" href="/rss.xml">
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
     :root {
       --glass-bg: rgba(255, 255, 255, 0.5);
       --text: #222;
       --text-light: #555;
       --border: rgba(128,128,128,0.2);
       --card-bg: rgba(255, 255, 255, 0.4);
+      --btn-bg: #b55;
+      --bg: #f5f5f7;
     }
     .dark {
       --glass-bg: rgba(30, 30, 30, 0.5);
@@ -27,12 +30,15 @@
       --text-light: #bbb;
       --border: rgba(255,255,255,0.15);
       --card-bg: rgba(50, 50, 50, 0.4);
+      --btn-bg: #cc7;
+      --bg: #1c1c22;
     }
 
     body {
-      font-family: "Noto Serif SC", serif;
+      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", serif;
       margin: 0;
       padding: 20px;
+      background-color: var(--bg, #f5f5f7);
       background-image: url('https://api.komll.com/images');
       background-size: cover;
       background-position: center;
@@ -52,11 +58,11 @@
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 8px 32px rgba(0,0,0,0.1);
       transition: background 0.5s, transform 0.3s, box-shadow 0.3s;
-      opacity: 0;
-      transform: scale(0.98);
-      animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 1;
+      transform: scale(1);
+      animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     }
-    @keyframes pageEnter { to { opacity: 1; transform: scale(1); } }
+    @keyframes pageEnter { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
     .glass-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
 
     h1 { text-align: center; margin-top: 0; }
@@ -71,11 +77,11 @@
       border-radius: 12px;
       margin-bottom: 8px;
       background: var(--card-bg);
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeUp 0.4s forwards;
+      opacity: 1;
+      transform: translateY(0);
+      animation: fadeUp 0.4s backwards;
     }
-    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     .friend-item:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
     .friend-item:last-child { border-bottom: none; }
     .friend-avatar {
@@ -144,9 +150,35 @@
     .umami-stat-item:first-child { border-right: 1px solid rgba(128,128,128,0.2); }
     .dark .umami-stats-bottom,
     .dark .umami-stat-item:first-child { border-color: rgba(255,255,255,0.15); }
+
+    /* 移动端：缩短页边距、卡片加宽，背景改为随页面滚动 */
+    @media (max-width: 480px) {
+      body { padding: 12px; }
+      .glass-card { width: 100%; margin: 16px auto; padding: 20px 16px; }
+    }
+
+    /* 触屏设备：去掉悬停位移带来的粘滞感 */
+    @media (hover: none), (pointer: coarse) {
+      .glass-card:hover, .friend-item:hover, .friend-name:hover,
+      .footer-links a:hover {
+        transform: none !important;
+      }
+    }
+
+    /* 减弱动态效果：禁用动画并确保内容可见 */
+    @media (prefers-reduced-motion: reduce) {
+      .glass-card, .friend-item {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
   </style>
 </head>
 <body>
+  <noscript>
+    <div style="position:fixed;left:0;right:0;top:0;z-index:9999;background:#b55;color:#fff;text-align:center;padding:8px;font-size:13px;">本站内容依赖 JavaScript 渲染，请启用 JavaScript 后再访问。</div>
+  </noscript>
   <button class="theme-toggle" id="theme-toggle" aria-label="切换夜间模式">🌙</button>
 
   <div class="glass-card">

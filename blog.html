@@ -14,6 +14,7 @@
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="AkiNard Blog RSS" href="/rss.xml">
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
     :root {
       --glass-bg: rgba(255, 255, 255, 0.5);
       --card-bg: rgba(255, 255, 255, 0.4);
@@ -26,6 +27,7 @@
       --pagination-bg: rgba(255,255,255,0.5);
       --pagination-active: #b55;
       --pagination-text: #555;
+      --bg: #f5f5f7;
     }
     .dark {
       --glass-bg: rgba(30, 30, 30, 0.5);
@@ -39,12 +41,14 @@
       --pagination-bg: rgba(255,255,255,0.08);
       --pagination-active: #cc7;
       --pagination-text: #ccc;
+      --bg: #1c1c22;
     }
 
     body {
-      font-family: "Noto Serif SC", serif;
+      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", serif;
       margin: 0;
       padding: 20px;
+      background-color: var(--bg, #f5f5f7);
       background-image: url('https://api.komll.com/images');
       background-size: cover;
       background-position: center;
@@ -64,11 +68,12 @@
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 8px 32px rgba(0,0,0,0.1);
       transition: background 0.5s, transform 0.3s, box-shadow 0.3s;
-      opacity: 0;
-      transform: scale(0.98);
-      animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 1;
+      transform: scale(1);
+      animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     }
     @keyframes pageEnter {
+      from { opacity: 0; transform: scale(0.98); }
       to { opacity: 1; transform: scale(1); }
     }
     .glass-card:hover {
@@ -107,11 +112,12 @@
       padding: 18px;
       margin-bottom: 16px;
       transition: background 0.5s, border-color 0.5s, transform 0.3s, box-shadow 0.3s;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeUp 0.5s forwards;
+      opacity: 1;
+      transform: translateY(0);
+      animation: fadeUp 0.5s backwards;
     }
     @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
     .post-card:hover {
@@ -257,9 +263,36 @@
     .umami-stat-item:first-child { border-right: 1px solid rgba(128,128,128,0.2); }
     .dark .umami-stats-bottom,
     .dark .umami-stat-item:first-child { border-color: rgba(255,255,255,0.15); }
+
+    /* 移动端：缩短页边距、卡片加宽，背景改为随页面滚动 */
+    @media (max-width: 480px) {
+      body { padding: 12px; }
+      .glass-card { width: 100%; margin: 16px auto; padding: 20px 16px; }
+    }
+
+    /* 触屏设备：去掉悬停位移带来的粘滞感 */
+    @media (hover: none), (pointer: coarse) {
+      .glass-card:hover, .post-card:hover, .tag:hover,
+      .pagination button:hover, .pagination .page-num:hover,
+      .footer-links a:hover {
+        transform: none !important;
+      }
+    }
+
+    /* 减弱动态效果：禁用动画并确保内容可见 */
+    @media (prefers-reduced-motion: reduce) {
+      .glass-card, .post-card, .tag, .pagination button, .pagination .page-num {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
   </style>
 </head>
 <body>
+  <noscript>
+    <div style="position:fixed;left:0;right:0;top:0;z-index:9999;background:#b55;color:#fff;text-align:center;padding:8px;font-size:13px;">本站内容依赖 JavaScript 渲染，请启用 JavaScript 后再访问。</div>
+  </noscript>
   <button class="theme-toggle" id="theme-toggle" aria-label="切换夜间模式">🌙</button>
 
   <div class="glass-card">
@@ -344,13 +377,29 @@
 
     function renderPagination(totalItems) {
       const paginationEl = document.getElementById('pagination');
-      const totalPages = Math.ceil(totalItems / POSTS_PER_PAGE);
+      const totalPages = Math.max(1, Math.ceil(totalItems / POSTS_PER_PAGE));
       if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
       let html = '';
       html += `<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹</button>`;
+
+      // 页码窗口：首页 && 尾页 && 当前页±2，中间用省略号折叠
+      const pages = [];
+      const SIBLINGS = 2;
       for (let i = 1; i <= totalPages; i++) {
-        html += `<span class="page-num ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</span>`;
+        if (i === 1 || i === totalPages || (i >= currentPage - SIBLINGS && i <= currentPage + SIBLINGS)) {
+          pages.push(i);
+        } else if (pages[pages.length - 1] !== '…') {
+          pages.push('…');
+        }
       }
+      pages.forEach(p => {
+        if (p === '…') {
+          html += `<span class="page-num" style="cursor:default">…</span>`;
+        } else {
+          html += `<span class="page-num ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</span>`;
+        }
+      });
+
       html += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>›</button>`;
       paginationEl.innerHTML = html;
     }
