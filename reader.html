@@ -12,6 +12,21 @@
   <meta property="og:description" content="AkiNard Blog 文章">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://test.578113.xyz/reader.html">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="SkyCeria">
+  <link rel="canonical" href="https://test.578113.xyz/reader.html">
+  <meta property="og:site_name" content="AkiNard Blog">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:image" content="https://test.578113.xyz/avatar.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="阅读文章 - AkiNard Blog">
+  <meta name="twitter:description" content="AkiNard Blog 文章">
+  <meta name="twitter:image" content="https://test.578113.xyz/avatar.jpg">
+  <link rel="icon" type="image/jpeg" href="avatar.jpg">
+  <link rel="apple-touch-icon" href="avatar.jpg">
+  <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1c1c22" media="(prefers-color-scheme: dark)">
+  <script type="application/ld+json" id="article-ld"></script>
   <!-- og:url 会在文章加载后由 JS 更新为实际地址 -->
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="AkiNard Blog RSS" href="/rss.xml">
@@ -330,13 +345,15 @@
     </div>
   </nav>
 
-  <div class="glass-card">
+  <div class="glass-card" role="main">
+    <article>
     <div class="article-header">
       <h1 id="article-title">加载中...</h1>
       <div class="meta" id="article-meta"></div>
       <div class="tags" id="article-tags"></div>
     </div>
     <div class="article-body" id="article-body">加载中...</div>
+    </article>
 
     <div class="nav">
       <a id="prev-link" href="#">← 上一篇</a>
@@ -450,6 +467,25 @@
           loadGiscus();
           document.querySelector('meta[property="og:description"]').setAttribute('content', post.description || '');
           document.querySelector('meta[property="og:url"]').setAttribute('content', window.location.href);
+          // SEO：og:image / Twitter / Article 结构化数据
+          const ogImg = post.image || 'https://test.578113.xyz/avatar.jpg';
+          document.querySelector('meta[property="og:image"]').setAttribute('content', ogImg);
+          document.querySelector('meta[name="twitter:title"]').setAttribute('content', post.title + ' - AkiNard Blog');
+          document.querySelector('meta[name="twitter:description"]').setAttribute('content', post.description || '');
+          document.querySelector('meta[name="twitter:image"]').setAttribute('content', ogImg);
+          const ld = document.getElementById('article-ld');
+          if (ld) {
+            ld.textContent = JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Article",
+              "headline": post.title,
+              "description": post.description || '',
+              "datePublished": post.published || '',
+              "image": ogImg,
+              "author": { "@type": "Person", "name": "SkyCeria" },
+              "mainEntityOfPage": window.location.href
+            });
+          }
 
           const contentLen = (post.content || '').replace(/[#>*`~|]/g, '').length;
           const minutes = Math.max(1, Math.round(contentLen / 350));

@@ -19,6 +19,7 @@ function parseFrontmatter(content) {
   const descMatch = fm.match(/description:\s*["']?(.+?)["']?\s*\n/);
   const catMatch = fm.match(/category:\s*["']?(.+?)["']?\s*\n/);
   const draftMatch = fm.match(/draft:\s*(true|false)/);
+  const imageMatch = fm.match(/image:\s*["']?(.+?)["']?\s*\n/);
   const tagsMatch = fm.match(/tags:\s*\[([^\]]+)\]/);
   if (tagsMatch) {
     data.tags = tagsMatch[1].split(',').map(t => t.trim().replace(/['"]/g, ''));
@@ -31,6 +32,7 @@ function parseFrontmatter(content) {
   if (descMatch) data.description = descMatch[1].trim();
   if (catMatch) data.category = catMatch[1].trim();
   if (draftMatch) data.draft = draftMatch[1] === 'true';
+  if (imageMatch) data.image = imageMatch[1].trim();
   return data;
 }
 
@@ -52,6 +54,7 @@ files.forEach(file => {
     description: fm.description || '',
     tags: fm.tags || [],
     category: fm.category || '',
+    image: fm.image || '',
     content: body
   });
 });
@@ -132,3 +135,10 @@ const commitInfo = {
 };
 fs.writeFileSync(path.join(__dirname, 'commit.json'), JSON.stringify(commitInfo));
 console.log('commit.json 已生成');
+
+// ========== 生成 robots.txt ==========
+const robots = `User-agent: *
+Allow: /
+Sitemap: ${SITE_URL}/sitemap.xml`;
+fs.writeFileSync(path.join(__dirname, 'robots.txt'), robots);
+console.log('robots.txt 已生成');
