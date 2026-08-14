@@ -504,15 +504,11 @@
               "mainEntityOfPage": window.location.href
             });
           }
-          // 文章浏览量（用 /pages 按路径匹配单篇，避免拿到全站总量；从 0 滚动到真实值）
+          // 文章浏览量：/stats + path=eq. 精确匹配单篇（v3 语法，已实测确认）
           const vEndAt = Date.now();
-          window.umamiFetch('/websites/{id}/pages', '?startAt=0&endAt=' + vEndAt + '&unit=hour&timezone=Asia%2FShanghai&limit=100')
-            .then(function (list) {
-              let n = 0;
-              if (Array.isArray(list)) {
-                const hit = list.filter(function (it) { return it && it.x === window.location.pathname; })[0];
-                if (hit) n = hit.pageviews || 0;
-              }
+          window.umamiFetch('/websites/{id}/stats', '?startAt=0&endAt=' + vEndAt + '&unit=hour&timezone=Asia%2FShanghai&path=eq.' + encodeURIComponent(window.location.pathname) + '&compare=false')
+            .then(function (d) {
+              const n = (d && typeof d.pageviews === 'number') ? d.pageviews : 0;
               animateViews(document.getElementById('article-meta'), articleMetaBase, n);
             });
 

@@ -415,17 +415,6 @@
       })
       .catch(() => { document.getElementById('posts-container').innerText = '加载文章失败'; });
 
-    // 卡片浏览量（Umami /pages，一条请求拿全站，按无 html 路径匹配）
-    window.umamiFetch('/websites/{id}/pages', '?startAt=0&endAt=' + Date.now() + '&unit=hour&timezone=Asia%2FShanghai&limit=100')
-      .then(list => {
-        if (!Array.isArray(list)) return;
-        list.forEach(it => { if (it && it.x) viewsMap[it.x] = it.pageviews || 0; });
-        document.querySelectorAll('.post-views').forEach(el => {
-          const n = viewsMap['/post/' + el.getAttribute('data-slug') + '/'];
-          if (typeof n === 'number') el.textContent = ' · ' + n.toLocaleString() + ' 次阅读';
-        });
-      });
-
     function renderPosts(posts, page) {
       const container = document.getElementById('posts-container');
       if (posts.length === 0) {
@@ -444,10 +433,29 @@
         </div>
       `).join('');
 
-      // 填充卡片浏览量
+      // 填充已加载的卡片浏览量 + 拉取新卡片的浏览量
       document.querySelectorAll('.post-views').forEach(el => {
         const n = viewsMap['/post/' + el.getAttribute('data-slug') + '/'];
         if (typeof n === 'number') el.textContent = ' · ' + n.toLocaleString() + ' 次阅读';
+      });
+      loadCardViews();
+    }
+
+    // 每篇文章用 /stats + path=eq. 精确匹配浏览量（v3 语法，已实测确认）
+    function loadCardViews() {
+      const endAt = Date.now();
+      document.querySelectorAll('.post-views').forEach(el => {
+        const slug = el.getAttribute('data-slug');
+        const key = '/post/' + slug + '/';
+        if (viewsMap[key] !== undefined) return;
+        window.umamiFetch('/websites/{id}/stats', '?startAt=0&endAt=' + endAt + '&unit=hour&timezone=Asia%2FShanghai&path=eq.' + encodeURIComponent(key) + '&compare=false')
+          .then(d => {
+            if (d && typeof d.pageviews === 'number') {
+              viewsMap[key] = d.pageviews;
+              const el2 = document.querySelector('.post-views[data-slug="' + slug + '"]');
+              if (el2) el2.textContent = ' · ' + d.pageviews.toLocaleString() + ' 次阅读';
+            }
+          });
       });
     }
 
