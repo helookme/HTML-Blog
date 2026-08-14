@@ -423,7 +423,7 @@
       const pagePosts = posts.slice(start, start + POSTS_PER_PAGE);
       container.innerHTML = pagePosts.map((post, i) => `
         <div class="post-card" style="animation-delay: ${i * 0.1}s">
-          <h2><a href="reader.html?slug=${encodeURIComponent(post.slug)}">${post.title}</a></h2>
+          <h2><a href="/post/${encodeURIComponent(post.slug)}.html">${post.title}</a></h2>
           <div class="post-meta">${post.published || ''} · ${post.category || ''}</div>
           ${post.description ? `<div class="post-desc">${post.description}</div>` : ''}
           ${post.tags && post.tags.length ? `<div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
@@ -526,6 +526,6 @@
       </button>
     </div>
   </div>
-  <script src="navbar.js?v=3"></script>
+  <script src="navbar.js?v=4"></script>
 </body>
 </html>

@@ -138,7 +138,7 @@
 
     function loadPosts(cb) {
       if (postsCache) { cb(postsCache); return; }
-      fetch('blog.json')
+      fetch('/blog.json')
         .then(function (r) { return r.json(); })
         .then(function (p) { postsCache = p; cb(p); })
         .catch(function () { cb([]); });
@@ -182,7 +182,7 @@
           return;
         }
         suggestEl.innerHTML = matched.map(function (p) {
-          return '<a class="navbar-suggest-item" href="reader.html?slug=' + encodeURIComponent(p.slug) + '">' +
+          return '<a class="navbar-suggest-item" href="/post/' + encodeURIComponent(p.slug) + '.html">' +
             '<div class="navbar-suggest-title">' + highlight(p.title, term) + '</div>' +
             '<div class="navbar-suggest-excerpt">' + highlight(makeExcerpt(p), term) + '</div>' +
             '</a>';
@@ -221,7 +221,7 @@
     // ===== 显示部署 commit 哈希 =====
     var commitEl = document.getElementById('commit-hash');
     if (commitEl) {
-      fetch('commit.json')
+      fetch('/commit.json')
         .then(function (r) { return r.json(); })
         .then(function (d) {
           if (d && d.sha) {
