@@ -287,6 +287,9 @@
     </div>
     <div class="article-body" id="article-body">加载中...</div>
 
+    <!-- Giscus 评论 -->
+    <div class="giscus" style="margin-top: 40px;"></div>
+
     <div class="nav">
       <a id="prev-link" href="#">← 上一篇</a>
       <a id="blog-link" href="blog.html">文章列表</a>
@@ -337,12 +340,40 @@
       body.classList.toggle('dark');
       localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
       updateBtn();
+      // 同步 Giscus 主题
+      const frame = document.querySelector('iframe.giscus-frame');
+      if (frame) {
+        frame.contentWindow.postMessage({ giscus: { setConfig: { theme: body.classList.contains('dark') ? 'dark' : 'light' } } }, 'https://giscus.app');
+      }
     });
     function updateBtn() { toggleBtn.innerHTML = body.classList.contains('dark') ? SUN_SVG : MOON_SVG; }
 
     const params = new URLSearchParams(window.location.search);
     const slug = params.get('slug');
     const articleBody = document.getElementById('article-body');
+
+    // ===== Giscus 评论（文章标题设置好后动态加载） =====
+    function loadGiscus() {
+      if (document.querySelector('script[src*="giscus.app/client.js"]')) return;
+      var s = document.createElement('script');
+      s.src = 'https://giscus.app/client.js';
+      s.setAttribute('data-repo', 'helookme/giscushtml');
+      s.setAttribute('data-repo-id', 'R_kgDOT39v2g');
+      s.setAttribute('data-category', 'Announcements');
+      s.setAttribute('data-category-id', 'DIC_kwDOT39v2s4DDVfB');
+      s.setAttribute('data-mapping', 'title');
+      s.setAttribute('data-strict', '0');
+      s.setAttribute('data-reactions-enabled', '1');
+      s.setAttribute('data-emit-metadata', '0');
+      s.setAttribute('data-input-position', 'top');
+      s.setAttribute('data-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+      s.setAttribute('data-lang', 'zh-CN');
+      s.setAttribute('data-loading', 'lazy');
+      s.setAttribute('crossorigin', 'anonymous');
+      s.async = true;
+      document.body.appendChild(s);
+    }
+
     if (!slug) {
       articleBody.innerText = '缺少文章标识';
       document.getElementById('article-title').innerText = '文章加载失败';
@@ -357,6 +388,7 @@
           document.getElementById('article-title').innerText = post.title;
           document.title = post.title + " - AkiNard Blog";
           document.querySelector('meta[property="og:title"]').setAttribute('content', post.title + ' - AkiNard Blog');
+          loadGiscus();
           document.querySelector('meta[property="og:description"]').setAttribute('content', post.description || '');
           document.querySelector('meta[property="og:url"]').setAttribute('content', window.location.href);
 
