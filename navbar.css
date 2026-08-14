@@ -67,6 +67,7 @@
   flex: 1;
   min-width: 0;
   display: flex;
+  position: relative;
 }
 .navbar-search input {
   width: 100%;
@@ -176,6 +177,79 @@
 }
 .dark .nav-menu-item:hover { background: rgba(204, 204, 119, 0.12); }
 .nav-menu-item svg { flex-shrink: 0; }
+
+/* ===== 搜索联想下拉 ===== */
+.navbar-suggest {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: min(380px, 100%);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  padding: 6px;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1200;
+}
+.dark .navbar-suggest {
+  background: rgba(35, 35, 40, 0.92);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.navbar-suggest.show {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.navbar-suggest-item {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.2s;
+  max-width: 100%;
+}
+.navbar-suggest-item:hover { background: rgba(181, 85, 85, 0.1); }
+.dark .navbar-suggest-item:hover { background: rgba(204, 204, 119, 0.1); }
+.navbar-suggest-title {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.navbar-suggest-excerpt {
+  font-size: 12px;
+  color: rgba(120, 120, 120, 0.9);
+  margin-top: 3px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.dark .navbar-suggest-excerpt { color: rgba(200, 200, 200, 0.7); }
+.navbar-suggest mark {
+  background: rgba(255, 213, 79, 0.55);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+.dark .navbar-suggest mark { background: rgba(204, 204, 119, 0.35); }
+.navbar-suggest-empty {
+  padding: 12px;
+  font-size: 13px;
+  text-align: center;
+  color: rgba(120, 120, 120, 0.9);
+}
 
 /* ===== 移动端适配：保持单行，隐藏站点名给搜索腾空间 ===== */
 @media (max-width: 560px) {
