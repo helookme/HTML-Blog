@@ -445,9 +445,16 @@
     }
 
     window.goToPage = function(page) {
+      if (page === currentPage) return;
       currentPage = page;
       renderPosts(filteredPosts, currentPage);
       renderPagination(filteredPosts.length);
+      // 翻页后平滑回到顶部
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (e) {
+        window.scrollTo(0, 0);
+      }
     };
 
     document.getElementById('search').addEventListener('input', (e) => {
