@@ -197,6 +197,13 @@
     .footer-links a { color: var(--text-light); text-decoration: none; margin: 0 12px; transition: color 0.3s; }
     .footer-links a:hover { color: var(--link); }
 
+    /* 底部区块分隔 */
+    .block-divider {
+      border-top: 1px solid var(--border);
+      margin: 34px 0 20px;
+    }
+    .giscus { margin-top: 4px; }
+
     /* Umami 统计卡片 */
     .umami-stats-glass {
       background: var(--glass-bg);
@@ -287,9 +294,6 @@
     </div>
     <div class="article-body" id="article-body">加载中...</div>
 
-    <!-- Giscus 评论 -->
-    <div class="giscus" style="margin-top: 40px;"></div>
-
     <div class="nav">
       <a id="prev-link" href="#">← 上一篇</a>
       <a id="blog-link" href="blog.html">文章列表</a>
@@ -300,7 +304,13 @@
       <span id="next-title" class="nav-title"></span>
     </div>
 
-    <!-- Umami 统计卡片 -->
+    <!-- Giscus 评论分块 -->
+    <div class="block-divider"></div>
+    <div class="umami-stats-header">💬 评论</div>
+    <div class="giscus"></div>
+
+    <!-- Umami 统计卡片分块 -->
+    <div class="block-divider"></div>
     <div class="umami-stats-glass">
       <div class="umami-stats-container">
         <div class="umami-stats-header">统计</div>
@@ -320,6 +330,8 @@
         </div>
       </div>
     </div>
+
+    <div class="block-divider"></div>
 
     <div class="footer-links">
       <a href="/sitemap.xml">Sitemap</a>
