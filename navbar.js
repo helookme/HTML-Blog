@@ -36,7 +36,12 @@
       var toTop = document.getElementById('side-to-top');
       if (toTop) {
         toTop.addEventListener('click', function () {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          try {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } catch (e) {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+          }
           panel.classList.remove('open');
         });
       }
@@ -75,30 +80,30 @@
     });
 
     // ===== 下滑隐藏 / 上滑显示 =====
-    if (navbar || fab) {
-      var lastScrollY = window.pageYOffset || 0;
-      var ticking = false;
-      window.addEventListener('scroll', function () {
-        if (ticking) return;
-        ticking = true;
-        window.requestAnimationFrame(function () {
-          var y = window.pageYOffset || 0;
-          if (y > 120 && y > lastScrollY) {
-            if (navbar) navbar.classList.add('navbar-hidden');
-            closeMenu();
-            closeSuggest();
-          } else if (y < lastScrollY) {
-            if (navbar) navbar.classList.remove('navbar-hidden');
-          }
-          if (fab) {
-            if (y > 300) fab.classList.add('show');
-            else { fab.classList.remove('show'); if (panel) panel.classList.remove('open'); }
-          }
-          lastScrollY = y;
-          ticking = false;
-        });
-      });
+    var lastScrollY = window.pageYOffset || 0;
+    var ticking = false;
+    function onScroll() {
+      var y = window.pageYOffset || 0;
+      if (y > 120 && y > lastScrollY) {
+        if (navbar) navbar.classList.add('navbar-hidden');
+        closeMenu();
+        closeSuggest();
+      } else if (y < lastScrollY) {
+        if (navbar) navbar.classList.remove('navbar-hidden');
+      }
+      if (fab) {
+        if (y > 120) fab.classList.add('show');
+        else { fab.classList.remove('show'); if (panel) panel.classList.remove('open'); }
+      }
+      lastScrollY = y;
+      ticking = false;
     }
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(onScroll);
+    });
+    onScroll(); // 页面加载时也检查一次
 
     // ===== 搜索联想下拉 =====
     if (!navbarSearch) return;
