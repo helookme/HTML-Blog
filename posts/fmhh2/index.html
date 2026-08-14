@@ -305,6 +305,24 @@
       transition: transform 0.25s ease;
       will-change: transform;
     }
+    /* 页面切换淡入淡出（View Transitions，渐进增强） */
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.25s; }
+    @media (prefers-reduced-motion: reduce) {
+      ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+    }
+
+    /* 标题逐字浮现 */
+    .article-header h1 .letter {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: letterIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes letterIn { to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      .article-header h1 .letter { animation: none !important; opacity: 1 !important; transform: none !important; }
+    }
   </style>
   <script defer src="https://umami.578113.xyz/script.js" data-website-id="d72bd4ca-e496-42b7-ae65-13424856f679"></script>
   <script src="../../umami.js"></script>
@@ -427,6 +445,20 @@
     });
     function updateBtn() { toggleBtn.innerHTML = body.classList.contains('dark') ? SUN_SVG : MOON_SVG; }
 
+    // 标题逐字浮现（长标题/减弱动效时自动降级为直接显示）
+    function revealTitle(el, text) {
+      if (!el) return;
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || !text || text.length > 20) { el.innerText = text; return; }
+      var html = '';
+      for (var i = 0; i < text.length; i++) {
+        var c = text[i];
+        var esc = c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '"' ? '&quot;' : c;
+        html += '<span class="letter" style="animation-delay:' + (i * 35) + 'ms">' + (c === ' ' ? '&nbsp;' : esc) + '</span>';
+      }
+      el.innerHTML = html;
+    }
+
     // 浏览量数字滚动动画（拼在阅读时间后面）
     let articleMetaBase = '';
     function animateViews(el, base, target) {
@@ -479,7 +511,7 @@
           if (index === -1) throw new Error('文章未找到');
           const post = posts[index];
 
-          document.getElementById('article-title').innerText = post.title;
+          revealTitle(document.getElementById('article-title'), post.title);
           document.title = post.title + " - AkiNard Blog";
           document.querySelector('meta[property="og:title"]').setAttribute('content', post.title + ' - AkiNard Blog');
           loadGiscus();

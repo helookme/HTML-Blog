@@ -281,6 +281,12 @@
       }
       .avatar { box-shadow: none !important; }
     }
+    /* 页面切换淡入淡出（View Transitions，渐进增强） */
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.25s; }
+    @media (prefers-reduced-motion: reduce) {
+      ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+    }
   </style>
   <script defer src="https://umami.578113.xyz/script.js" data-website-id="d72bd4ca-e496-42b7-ae65-13424856f679"></script>
   <script src="umami.js"></script>

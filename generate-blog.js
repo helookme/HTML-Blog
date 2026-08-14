@@ -24,8 +24,19 @@ function parseFrontmatter(content) {
   if (tagsMatch) {
     data.tags = tagsMatch[1].split(',').map(t => t.trim().replace(/['"]/g, ''));
   } else {
-    const tagsLine = fm.match(/tags:\s*(.+)/);
-    if (tagsLine) data.tags = tagsLine[1].split(',').map(t => t.trim());
+    // 块式列表写法：tags:\n  - 标签1\n  - 标签2
+    const blockMatch = fm.match(/tags:\s*\n((?:[ \t]*-[^\n]*\n?)+)/);
+    if (blockMatch) {
+      data.tags = [];
+      const re = /[ \t]*-[ \t]*([^\n]+)/g;
+      let m;
+      while ((m = re.exec(blockMatch[1])) !== null) {
+        data.tags.push(m[1].trim().replace(/['"]/g, ''));
+      }
+    } else {
+      const tagsLine = fm.match(/tags:\s*(.+)/);
+      if (tagsLine) data.tags = tagsLine[1].split(',').map(t => t.trim());
+    }
   }
   if (titleMatch) data.title = titleMatch[1].trim();
   if (pubMatch) data.published = pubMatch[1].trim();

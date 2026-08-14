@@ -22,7 +22,7 @@
     "published": "2026-04-25",
     "description": "林浅来苏晓家吃饭啦",
     "tags": [
-      "- 小说"
+      "小说"
     ],
     "category": "贩卖黄昏",
     "image": "https://image.578113.xyz/posts/fmhh.jpg",
@@ -35,7 +35,7 @@
     "published": "2026-04-24",
     "description": "林浅和苏晓的第一次交汇！",
     "tags": [
-      "- 小说"
+      "小说"
     ],
     "category": "贩卖黄昏",
     "image": "https://image.578113.xyz/posts/fmhh.jpg",
@@ -48,7 +48,7 @@
     "published": "2026-04-23",
     "description": "真的很无聊诶 来写个小说吧！",
     "tags": [
-      "- 小说"
+      "小说"
     ],
     "category": "贩卖黄昏",
     "image": "https://image.578113.xyz/posts/fmhh.jpg",
@@ -61,7 +61,8 @@
     "published": "2026-04-18",
     "description": "魔域旗舰魔方\"万人迷\"V10开箱体验",
     "tags": [
-      "- 魔方"
+      "魔方",
+      "魔域"
     ],
     "category": "个人生活",
     "image": "https://image.578113.xyz/posts/wrmv10.jpg",
@@ -117,7 +118,9 @@
     "published": "2026-03-26",
     "description": "虽然配置差，但是还要啥自行车",
     "tags": [
-      "- 服务器"
+      "服务器",
+      "Debian",
+      "随身WiFi"
     ],
     "category": "技术教程",
     "image": "https://image.578113.xyz/posts/sswifi-debian.png",
@@ -130,7 +133,10 @@
     "published": "2026-03-09",
     "description": "第一次写千字长文！",
     "tags": [
-      "- 学校"
+      "学校",
+      "校园霸凌",
+      "生活",
+      "个人"
     ],
     "category": "个人生活",
     "image": "",
@@ -159,7 +165,10 @@
     "published": "2026-02-19",
     "description": "CloudFlare+GitHub无敌辣！",
     "tags": [
-      "- Fuwari"
+      "Fuwari",
+      "搭建",
+      "教程",
+      "博客"
     ],
     "category": "技术教程",
     "image": "https://image.578113.xyz/posts/fuwari.png",
