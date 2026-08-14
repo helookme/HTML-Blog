@@ -33,6 +33,29 @@
       });
     }
 
+    // ===== 下滑隐藏 / 上滑显示 =====
+    var navbar = document.querySelector('.navbar');
+    if (navbar) {
+      var lastScrollY = window.pageYOffset || 0;
+      var ticking = false;
+      window.addEventListener('scroll', function () {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(function () {
+          var y = window.pageYOffset || 0;
+          if (y > 120 && y > lastScrollY) {
+            navbar.classList.add('navbar-hidden');
+            if (navMenu) navMenu.classList.remove('open');
+            if (hamburger) hamburger.classList.remove('open');
+          } else if (y < lastScrollY) {
+            navbar.classList.remove('navbar-hidden');
+          }
+          lastScrollY = y;
+          ticking = false;
+        });
+      });
+    }
+
     // ===== 导航栏搜索 =====
     var navbarSearch = document.getElementById('navbar-search');
     if (!navbarSearch) return;

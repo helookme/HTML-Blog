@@ -13,7 +13,11 @@
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   color: #222;
+  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
   animation: navIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.navbar.navbar-hidden {
+  transform: translateY(calc(-100% - 16px));
 }
 .dark .navbar {
   background: rgba(30, 30, 30, 0.6);
@@ -172,20 +176,15 @@
 }
 .dark .nav-menu-item:hover { background: rgba(204, 204, 119, 0.12); }
 .nav-menu-item svg { flex-shrink: 0; }
-.nav-menu-item .menu-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #4caf50;
-  flex-shrink: 0;
-}
 
-/* ===== 移动端适配：搜索栏换行到第二行 ===== */
+/* ===== 移动端适配：保持单行，隐藏站点名给搜索腾空间 ===== */
 @media (max-width: 560px) {
-  .navbar-inner { flex-wrap: wrap; gap: 10px; }
-  .navbar-search { order: 3; flex-basis: 100%; }
+  .navbar-inner { gap: 8px; padding: 8px 10px; }
+  .navbar-title { display: none; }
+  .navbar-avatar { width: 30px; height: 30px; }
+  .navbar-search input { padding: 7px 12px; font-size: 13px; }
   .navbar { margin-bottom: 14px; }
-  .navbar-menu { right: 10px; left: 10px; min-width: 0; }
+  .navbar-menu { right: 8px; left: 8px; min-width: 0; }
 }
 
 /* 触屏：去掉悬停位移 */
@@ -196,7 +195,7 @@
 
 /* 减弱动态效果 */
 @media (prefers-reduced-motion: reduce) {
-  .navbar { animation: none !important; }
+  .navbar { animation: none !important; transition: none !important; }
   .navbar-menu,
   .hamburger .hl-1, .hamburger .hl-2, .hamburger .hl-3,
   .nav-menu-item { transition: none !important; }
