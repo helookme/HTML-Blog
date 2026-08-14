@@ -426,7 +426,7 @@
       const pagePosts = posts.slice(start, start + POSTS_PER_PAGE);
       container.innerHTML = pagePosts.map((post, i) => `
         <div class="post-card" style="animation-delay: ${i * 0.1}s">
-          <h2><a href="/post/${encodeURIComponent(post.slug)}/">${post.title}</a></h2>
+          <h2><a href="/posts/${encodeURIComponent(post.slug)}/">${post.title}</a></h2>
           <div class="post-meta">${post.published || ''} · ${post.category || ''}<span class="post-views" data-slug="${post.slug}"></span></div>
           ${post.description ? `<div class="post-desc">${post.description}</div>` : ''}
           ${post.tags && post.tags.length ? `<div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
@@ -435,7 +435,7 @@
 
       // 填充已加载的卡片浏览量 + 拉取新卡片的浏览量
       document.querySelectorAll('.post-views').forEach(el => {
-        const n = viewsMap['/post/' + el.getAttribute('data-slug') + '/'];
+        const n = viewsMap['/posts/' + el.getAttribute('data-slug') + '/'];
         if (typeof n === 'number') el.textContent = ' · ' + n.toLocaleString() + ' 次阅读';
       });
       loadCardViews();
@@ -446,7 +446,7 @@
       const endAt = Date.now();
       document.querySelectorAll('.post-views').forEach(el => {
         const slug = el.getAttribute('data-slug');
-        const key = '/post/' + slug + '/';
+        const key = '/posts/' + slug + '/';
         if (viewsMap[key] !== undefined) return;
         window.umamiFetch('/websites/{id}/stats', '?startAt=0&endAt=' + endAt + '&unit=hour&timezone=Asia%2FShanghai&path=eq.' + encodeURIComponent(key) + '&compare=false')
           .then(d => {
@@ -529,6 +529,6 @@
       </button>
     </div>
   </div>
-  <script src="navbar.js?v=5"></script>
+  <script src="navbar.js?v=6"></script>
 </body>
 </html>

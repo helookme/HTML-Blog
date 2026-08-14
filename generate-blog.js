@@ -70,10 +70,10 @@ const rssItems = posts.map(post => {
   const pubDate = post.published ? new Date(post.published + 'T00:00:00+08:00').toUTCString() : '';
   return `    <item>
       <title>${escapeXml(post.title)}</title>
-      <link>${SITE_URL}/post/${post.slug}/</link>
+      <link>${SITE_URL}/posts/${post.slug}/</link>
       <description>${escapeXml(post.description || '')}</description>
       <pubDate>${pubDate}</pubDate>
-      <guid>${SITE_URL}/post/${post.slug}/</guid>
+      <guid>${SITE_URL}/posts/${post.slug}/</guid>
     </item>`;
 }).join('\n');
 
@@ -96,7 +96,7 @@ console.log('rss.xml 已生成');
 const sitemapItems = posts.map(post => {
   const lastmod = post.published || '';
   return `  <url>
-    <loc>${SITE_URL}/post/${post.slug}/</loc>
+    <loc>${SITE_URL}/posts/${post.slug}/</loc>
     <lastmod>${lastmod}</lastmod>
   </url>`;
 }).join('\n');
@@ -144,12 +144,12 @@ fs.writeFileSync(path.join(__dirname, 'robots.txt'), robots);
 console.log('robots.txt 已生成');
 
 // ========== 生成每篇文章的静态页面（SEO 用真实地址，无 .html） ==========
-const postDir = path.join(__dirname, 'post');
+const postDir = path.join(__dirname, 'posts');
 if (!fs.existsSync(postDir)) fs.mkdirSync(postDir);
 const readerTemplate = fs.readFileSync(path.join(__dirname, 'reader.html'), 'utf-8');
 
 posts.forEach(post => {
-  const postUrl = `${SITE_URL}/post/${post.slug}/`;
+  const postUrl = `${SITE_URL}/posts/${post.slug}/`;
   const postImg = post.image || `${SITE_URL}/avatar.jpg`;
   const escTitle = escapeXml(post.title);
   const escDesc = escapeXml(post.description || '');

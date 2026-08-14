@@ -1,1 +1,2 @@
-/post/*.html /post/:splat/ 301
+/post/*.html /posts/:splat/ 301
+/post/* /posts/:splat/ 301

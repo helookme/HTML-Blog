@@ -528,14 +528,14 @@
 
           if (index > 0) {
             const prev = posts[index - 1];
-            prevLink.href = '/post/' + encodeURIComponent(prev.slug) + '/';
+            prevLink.href = '/posts/' + encodeURIComponent(prev.slug) + '/';
             prevLink.style.display = '';
             prevTitleEl.textContent = prev.title;
           } else { prevLink.style.display = 'none'; prevTitleEl.textContent = ''; }
 
           if (index < posts.length - 1) {
             const next = posts[index + 1];
-            nextLink.href = '/post/' + encodeURIComponent(next.slug) + '/';
+            nextLink.href = '/posts/' + encodeURIComponent(next.slug) + '/';
             nextLink.style.display = '';
             nextTitleEl.textContent = next.title;
           } else { nextLink.style.display = 'none'; nextTitleEl.textContent = ''; }
@@ -579,7 +579,7 @@
     </div>
   </div>
   <div class="lightbox" id="lightbox"><img id="lightbox-img" src="" alt=""></div>
-  <script src="navbar.js?v=5"></script>
+  <script src="navbar.js?v=6"></script>
   <script>
     // 阅读进度条
     (function () {
