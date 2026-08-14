@@ -267,6 +267,9 @@
   .navbar-brand:hover { opacity: 1; }
 }
 
+/* 防止移动端双击缩放页面（只禁用双击缩放，双指捏合缩放保留） */
+html, body { touch-action: manipulation; }
+
 /* 减弱动态效果 */
 @media (prefers-reduced-motion: reduce) {
   .navbar { animation: none !important; transition: none !important; }

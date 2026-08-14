@@ -122,6 +122,13 @@ function escapeXml(str) {
   return str.replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
+            .replace(/\"/g, '&quot;')
             .replace(/'/g, '&apos;');
 }
+
+// ========== 写入部署信息（Cloudflare Pages 提供 CF_PAGES_COMMIT_SHA） ==========
+const commitInfo = {
+  sha: process.env.CF_PAGES_COMMIT_SHA || ''
+};
+fs.writeFileSync(path.join(__dirname, 'commit.json'), JSON.stringify(commitInfo));
+console.log('commit.json 已生成');

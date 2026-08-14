@@ -302,6 +302,7 @@
       <a href="/sitemap.xml">Sitemap</a>
       <a href="/rss.xml">RSS</a>
     </div>
+    <div class="commit-hash" id="commit-hash" style="margin-top:16px;font-size:12px;color:var(--text-light);text-align:center;opacity:0.8;"></div>
   </div>
 
   <script>
@@ -364,6 +365,15 @@
     }
     document.addEventListener('DOMContentLoaded', fetchUmamiStats);
     if (window.swup) window.swup.hooks.on('page:view', fetchUmamiStats);
+  </script>
+  <script>
+    (function () {
+      var el = document.getElementById('commit-hash');
+      if (!el) return;
+      fetch('commit.json').then(function (r) { return r.json(); }).then(function (d) {
+        if (d && d.sha) { el.textContent = 'Commit ' + d.sha.slice(0, 7); el.title = d.sha; }
+      }).catch(function () {});
+    })();
   </script>
 </body>
 </html>

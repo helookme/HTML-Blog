@@ -217,5 +217,19 @@
         }
       });
     }
+
+    // ===== 显示部署 commit 哈希 =====
+    var commitEl = document.getElementById('commit-hash');
+    if (commitEl) {
+      fetch('commit.json')
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d && d.sha) {
+            commitEl.textContent = 'Commit ' + d.sha.slice(0, 7);
+            commitEl.title = d.sha;
+          }
+        })
+        .catch(function () {});
+    }
   });
 })();
