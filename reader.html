@@ -247,9 +247,47 @@
         transform: none !important;
       }
     }
+
+    /* 阅读进度条 */
+    .reading-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, #b55, #d98c8c);
+      z-index: 1200;
+      transition: width 0.1s linear;
+      pointer-events: none;
+    }
+    .dark .reading-progress { background: linear-gradient(90deg, #cc7, #e6d98f); }
+
+    /* 图片灯箱 */
+    .article-body img { cursor: zoom-in; }
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      cursor: zoom-out;
+    }
+    .lightbox.show { opacity: 1; pointer-events: auto; }
+    .lightbox img {
+      max-width: 92vw;
+      max-height: 88vh;
+      border-radius: 8px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+    }
   </style>
 </head>
 <body>
+  <div class="reading-progress" id="reading-progress"></div>
   <noscript>
     <div style="position:fixed;left:0;right:0;top:0;z-index:9999;background:#b55;color:#fff;text-align:center;padding:8px;font-size:13px;">本站内容依赖 JavaScript 渲染，请启用 JavaScript 后再访问。</div>
   </noscript>
@@ -404,7 +442,9 @@
           document.querySelector('meta[property="og:description"]').setAttribute('content', post.description || '');
           document.querySelector('meta[property="og:url"]').setAttribute('content', window.location.href);
 
-          const metaStr = [post.published, post.category].filter(Boolean).join(' · ');
+          const contentLen = (post.content || '').replace(/[#>*`~|]/g, '').length;
+          const minutes = Math.max(1, Math.round(contentLen / 350));
+          const metaStr = [post.published, post.category, '约 ' + minutes + ' 分钟阅读'].filter(Boolean).join(' · ');
           document.getElementById('article-meta').innerText = metaStr;
 
           const tagsContainer = document.getElementById('article-tags');
@@ -479,6 +519,56 @@
     document.addEventListener('DOMContentLoaded', fetchUmamiStats);
     if (window.swup) window.swup.hooks.on('page:view', fetchUmamiStats);
   </script>
+  <div class="side-widget">
+    <button class="side-fab" id="side-fab" aria-label="打开快捷面板" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+    </button>
+    <div class="side-panel" id="side-panel">
+      <button class="side-panel-item" id="side-to-top">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+        返回顶部
+      </button>
+      <button class="side-panel-item" id="side-share">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        分享
+      </button>
+    </div>
+  </div>
   <script src="navbar.js"></script>
+  <script>
+    // 阅读进度条
+    (function () {
+      var bar = document.getElementById('reading-progress');
+      if (!bar) return;
+      function update() {
+        var h = document.documentElement;
+        var max = h.scrollHeight - h.clientHeight;
+        bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+      }
+      document.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+
+    // 图片灯箱
+    (function () {
+      var lb = document.getElementById('lightbox');
+      var lbImg = document.getElementById('lightbox-img');
+      if (!lb || !lbImg) return;
+      document.addEventListener('click', function (e) {
+        var t = e.target;
+        if (t && t.tagName === 'IMG' && t.closest('.article-body')) {
+          lbImg.src = t.currentSrc || t.src;
+          lbImg.alt = t.alt || '';
+          lb.classList.add('show');
+        }
+      });
+      lb.addEventListener('click', function () { lb.classList.remove('show'); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') lb.classList.remove('show');
+      });
+    })();
+  </script>
+  <div class="lightbox" id="lightbox"><img id="lightbox-img" src="" alt=""></div>
 </body>
 </html>

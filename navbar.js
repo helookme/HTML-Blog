@@ -25,6 +25,34 @@
       }
     }
 
+    // ===== 侧拉栏（返回顶部 / 分享） =====
+    var fab = document.getElementById('side-fab');
+    var panel = document.getElementById('side-panel');
+    if (fab && panel) {
+      fab.addEventListener('click', function (e) {
+        e.stopPropagation();
+        panel.classList.toggle('open');
+      });
+      var toTop = document.getElementById('side-to-top');
+      if (toTop) {
+        toTop.addEventListener('click', function () {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          panel.classList.remove('open');
+        });
+      }
+      var shareBtn = document.getElementById('side-share');
+      if (shareBtn) {
+        shareBtn.addEventListener('click', function () {
+          panel.classList.remove('open');
+          if (navigator.share) {
+            navigator.share({ title: document.title, url: window.location.href }).catch(function () {});
+          } else if (navigator.clipboard) {
+            navigator.clipboard.writeText(window.location.href).then(function () { alert('链接已复制'); });
+          }
+        });
+      }
+    }
+
     // ===== 汉堡菜单开合 =====
     if (hamburger && navMenu) {
       hamburger.addEventListener('click', function (e) {
@@ -39,14 +67,15 @@
     document.addEventListener('click', function (e) {
       if (!e.target.closest('.navbar')) closeMenu();
       if (!e.target.closest('.navbar-search')) closeSuggest();
+      if (!e.target.closest('.side-widget')) { if (panel) panel.classList.remove('open'); }
     });
     // Esc 关闭
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') { closeMenu(); closeSuggest(); }
+      if (e.key === 'Escape') { closeMenu(); closeSuggest(); if (panel) panel.classList.remove('open'); }
     });
 
     // ===== 下滑隐藏 / 上滑显示 =====
-    if (navbar) {
+    if (navbar || fab) {
       var lastScrollY = window.pageYOffset || 0;
       var ticking = false;
       window.addEventListener('scroll', function () {
@@ -55,11 +84,15 @@
         window.requestAnimationFrame(function () {
           var y = window.pageYOffset || 0;
           if (y > 120 && y > lastScrollY) {
-            navbar.classList.add('navbar-hidden');
+            if (navbar) navbar.classList.add('navbar-hidden');
             closeMenu();
             closeSuggest();
           } else if (y < lastScrollY) {
-            navbar.classList.remove('navbar-hidden');
+            if (navbar) navbar.classList.remove('navbar-hidden');
+          }
+          if (fab) {
+            if (y > 300) fab.classList.add('show');
+            else { fab.classList.remove('show'); if (panel) panel.classList.remove('open'); }
           }
           lastScrollY = y;
           ticking = false;
