@@ -293,7 +293,7 @@
   <noscript>
     <div style="position:fixed;left:0;right:0;top:0;z-index:9999;background:#b55;color:#fff;text-align:center;padding:8px;font-size:13px;">本站内容依赖 JavaScript 渲染，请启用 JavaScript 后再访问。</div>
   </noscript>
-  <button class="theme-toggle" id="theme-toggle" aria-label="切换夜间模式">🌙</button>
+  <button class="theme-toggle" id="theme-toggle" aria-label="切换夜间模式"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
 
   <div class="glass-card">
     <h1>文章列表</h1>
@@ -330,6 +330,8 @@
   </div>
 
   <script>
+    const MOON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    const SUN_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
     const toggleBtn = document.getElementById('theme-toggle');
     const body = document.body;
     const saved = localStorage.getItem('theme');
@@ -340,7 +342,7 @@
       localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
       updateBtn();
     });
-    function updateBtn() { toggleBtn.textContent = body.classList.contains('dark') ? '☀️' : '🌙'; }
+    function updateBtn() { toggleBtn.innerHTML = body.classList.contains('dark') ? SUN_SVG : MOON_SVG; }
 
     const POSTS_PER_PAGE = 5;
     let allPosts = [];
@@ -425,7 +427,7 @@
 
     // Umami 统计 (与首页相同)
     const UMAMI_CONFIG = {
-      baseUrl: 'https://umami.578113.xyz/api',
+      baseUrl: 'http://umami.578113.xyz/api',
       websiteId: 'd72bd4ca-e496-42b7-ae65-13424856f679',
       shareToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3ZWJzaXRlSWQiOiJkNzJiZDRjYS1lNDk2LTQyYjctYWU2NS0xMzQyNDg1NmY2NzkiLCJpYXQiOjE3ODYwOTE3ODJ9.NxnoEMp0VPSdxLdVYmuSBeAfODvWTfazF7L1lalvlLg'
     };
