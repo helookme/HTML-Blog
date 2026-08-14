@@ -352,7 +352,6 @@
     <div class="article-header">
       <h1 id="article-title">加载中...</h1>
       <div class="meta" id="article-meta"></div>
-      <div class="article-views" id="article-views" style="display:none;font-size:13px;color:var(--text-light);margin-bottom:10px;"></div>
       <div class="tags" id="article-tags"></div>
     </div>
     <div class="article-body" id="article-body">加载中...</div>
@@ -427,15 +426,16 @@
     });
     function updateBtn() { toggleBtn.innerHTML = body.classList.contains('dark') ? SUN_SVG : MOON_SVG; }
 
-    // 浏览量数字滚动动画
-    function animateCount(el, target) {
+    // 浏览量数字滚动动画（拼在阅读时间后面）
+    let articleMetaBase = '';
+    function animateViews(el, base, target) {
       var duration = 1200;
       var start = null;
       function step(ts) {
         if (!start) start = ts;
         var p = Math.min((ts - start) / duration, 1);
         var eased = 1 - Math.pow(1 - p, 3);
-        el.textContent = Math.floor(eased * target).toLocaleString() + ' 次阅读';
+        el.innerText = base + ' · ' + Math.floor(eased * target).toLocaleString() + ' 次阅读';
         if (p < 1) requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
@@ -503,22 +503,22 @@
               "mainEntityOfPage": window.location.href
             });
           }
-          // 文章浏览量（按无 html 的路径查询 Umami，从 0 滚动到真实值）
-          const viewsEl = document.getElementById('article-views');
-          if (viewsEl) {
-            const vEndAt = Date.now();
-            window.umamiFetch('/websites/{id}/stats', '?startAt=0&endAt=' + vEndAt + '&unit=hour&timezone=Asia%2FShanghai&url=' + encodeURIComponent(window.location.pathname))
-              .then(function (d) {
-                const n = (d && typeof d.pageviews === 'number') ? d.pageviews : 0;
-                viewsEl.style.display = '';
-                animateCount(viewsEl, n);
-              });
-          }
+          // 文章浏览量（用 /pages 按路径匹配单篇，避免拿到全站总量；从 0 滚动到真实值）
+          const vEndAt = Date.now();
+          window.umamiFetch('/websites/{id}/pages', '?startAt=0&endAt=' + vEndAt + '&unit=hour&timezone=Asia%2FShanghai&limit=100')
+            .then(function (list) {
+              let n = 0;
+              if (Array.isArray(list)) {
+                const hit = list.filter(function (it) { return it && it.x === window.location.pathname; })[0];
+                if (hit) n = hit.pageviews || 0;
+              }
+              animateViews(document.getElementById('article-meta'), articleMetaBase, n);
+            });
 
           const contentLen = (post.content || '').replace(/[#>*`~|]/g, '').length;
           const minutes = Math.max(1, Math.round(contentLen / 350));
-          const metaStr = [post.published, post.category, '约 ' + minutes + ' 分钟阅读'].filter(Boolean).join(' · ');
-          document.getElementById('article-meta').innerText = metaStr;
+          articleMetaBase = [post.published, post.category, '约 ' + minutes + ' 分钟阅读'].filter(Boolean).join(' · ');
+          document.getElementById('article-meta').innerText = articleMetaBase;
 
           const tagsContainer = document.getElementById('article-tags');
           if (post.tags && post.tags.length) {
