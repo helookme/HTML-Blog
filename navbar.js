@@ -25,7 +25,37 @@
       }
     }
 
-    // ===== 侧拉栏（返回顶部 / 分享） =====
+    // ===== 复制链接 =====
+    function fallbackCopy(text, done) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        done();
+      } catch (e) {
+        alert('复制失败，请手动复制：' + text);
+      }
+      document.body.removeChild(ta);
+    }
+    function copyLink(btn) {
+      var url = window.location.href;
+      var done = function () {
+        var old = btn.innerHTML;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+        setTimeout(function () { btn.innerHTML = old; }, 1500);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(done, function () { fallbackCopy(url, done); });
+      } else {
+        fallbackCopy(url, done);
+      }
+    }
+
+    // ===== 侧拉栏（返回顶部 / 复制链接） =====
     var fab = document.getElementById('side-fab');
     var panel = document.getElementById('side-panel');
     if (fab && panel) {
@@ -49,11 +79,7 @@
       if (shareBtn) {
         shareBtn.addEventListener('click', function () {
           panel.classList.remove('open');
-          if (navigator.share) {
-            navigator.share({ title: document.title, url: window.location.href }).catch(function () {});
-          } else if (navigator.clipboard) {
-            navigator.clipboard.writeText(window.location.href).then(function () { alert('链接已复制'); });
-          }
+          copyLink(shareBtn);
         });
       }
     }

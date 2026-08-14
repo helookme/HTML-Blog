@@ -215,7 +215,7 @@
       box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     }
     .umami-stats-container { text-align: center; color: var(--text); }
-    .umami-stats-header { font-weight: 600; margin-bottom: 12px; font-size: 14px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }
+    .umami-stats-header { font-weight: 600; margin-bottom: 12px; font-size: 14px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px; }
     .umami-stats-total { padding-bottom: 12px; margin-bottom: 8px; }
     .umami-stat-number { font-weight: 700; line-height: 1.2; }
     .umami-stat-label { font-size: 0.875rem; color: var(--text-light); margin-top: 2px; }
@@ -344,7 +344,7 @@
 
     <!-- Giscus 评论分块 -->
     <div class="block-divider"></div>
-    <div class="umami-stats-header">💬 评论</div>
+    <div class="umami-stats-header"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> 评论</div>
     <div class="giscus"></div>
 
     <!-- Umami 统计卡片分块 -->
@@ -529,8 +529,8 @@
         返回顶部
       </button>
       <button class="side-panel-item" id="side-share">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        分享
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        复制链接
       </button>
     </div>
   </div>
