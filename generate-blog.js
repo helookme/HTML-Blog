@@ -70,10 +70,10 @@ const rssItems = posts.map(post => {
   const pubDate = post.published ? new Date(post.published + 'T00:00:00+08:00').toUTCString() : '';
   return `    <item>
       <title>${escapeXml(post.title)}</title>
-      <link>${SITE_URL}/post/${post.slug}.html</link>
+      <link>${SITE_URL}/post/${post.slug}/</link>
       <description>${escapeXml(post.description || '')}</description>
       <pubDate>${pubDate}</pubDate>
-      <guid>${SITE_URL}/post/${post.slug}.html</guid>
+      <guid>${SITE_URL}/post/${post.slug}/</guid>
     </item>`;
 }).join('\n');
 
@@ -96,7 +96,7 @@ console.log('rss.xml 已生成');
 const sitemapItems = posts.map(post => {
   const lastmod = post.published || '';
   return `  <url>
-    <loc>${SITE_URL}/post/${post.slug}.html</loc>
+    <loc>${SITE_URL}/post/${post.slug}/</loc>
     <lastmod>${lastmod}</lastmod>
   </url>`;
 }).join('\n');
@@ -143,13 +143,13 @@ Sitemap: ${SITE_URL}/sitemap.xml`;
 fs.writeFileSync(path.join(__dirname, 'robots.txt'), robots);
 console.log('robots.txt 已生成');
 
-// ========== 生成每篇文章的静态页面（SEO 用真实地址） ==========
+// ========== 生成每篇文章的静态页面（SEO 用真实地址，无 .html） ==========
 const postDir = path.join(__dirname, 'post');
 if (!fs.existsSync(postDir)) fs.mkdirSync(postDir);
 const readerTemplate = fs.readFileSync(path.join(__dirname, 'reader.html'), 'utf-8');
 
 posts.forEach(post => {
-  const postUrl = `${SITE_URL}/post/${post.slug}.html`;
+  const postUrl = `${SITE_URL}/post/${post.slug}/`;
   const postImg = post.image || `${SITE_URL}/avatar.jpg`;
   const escTitle = escapeXml(post.title);
   const escDesc = escapeXml(post.description || '');
@@ -175,11 +175,15 @@ posts.forEach(post => {
   html = html.replace(/<meta name="twitter:description" content="AkiNard Blog 文章">/, `<meta name="twitter:description" content="${escDesc}">`);
   html = html.replace(/<meta name="twitter:image" content="[^"]*avatar\.jpg">/, `<meta name="twitter:image" content="${postImg}">`);
   html = html.replace(/<script type="application\/ld\+json" id="article-ld"><\/script>/, `<script type="application/ld+json" id="article-ld">${ldJson}</script>`);
-  // post/ 子目录下的相对资源修正
-  html = html.replace(/src="avatar\.jpg"/, 'src="../avatar.jpg"');
-  html = html.replace(/href="navbar\.css\?v=/, 'href="../navbar.css?v=');
-  html = html.replace(/src="navbar\.js\?v=/, 'src="../navbar.js?v=');
+  // post/<slug>/ 子目录下的相对资源修正（比根目录深两级）
+  html = html.replace(/src="avatar\.jpg"/, 'src="../../avatar.jpg"');
+  html = html.replace(/href="navbar\.css\?v=/, 'href="../../navbar.css?v=');
+  html = html.replace(/src="navbar\.js\?v=/, 'src="../../navbar.js?v=');
+  html = html.replace(/src="umami\.js"/, 'src="../../umami.js"');
   html = html.replace('</head>', `  <script>var EMBEDDED_SLUG = ${JSON.stringify(post.slug)};</script>\n</head>`);
-  fs.writeFileSync(path.join(postDir, post.slug + '.html'), html);
+
+  const pageDir = path.join(postDir, post.slug);
+  if (!fs.existsSync(pageDir)) fs.mkdirSync(pageDir, { recursive: true });
+  fs.writeFileSync(path.join(pageDir, 'index.html'), html);
 });
-console.log(`post/*.html 已生成 (${posts.length} 篇)`);
+console.log(`post/<slug>/index.html 已生成 (${posts.length} 篇)`);

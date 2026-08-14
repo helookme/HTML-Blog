@@ -8,29 +8,29 @@
   <!-- SEO -->
   <meta name="description" content="AkiNard Blog - 世间万物不及你. 这里是 @SkyCeria 的个人博客。">
   <meta name="keywords" content="博客,个人博客,技术,生活">
-  <meta property="og:title" content="教你做一个超级酷的世界大屏! - AkiNard Blog">
-  <meta property="og:description" content="但没啥用(">
+  <meta property="og:title" content="魔域WRM V10开箱！ - AkiNard Blog">
+  <meta property="og:description" content="魔域旗舰魔方&quot;万人迷&quot;V10开箱体验">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://test.578113.xyz/post/worldmonitor.html">
+  <meta property="og:url" content="https://test.578113.xyz/post/wrmv10/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="SkyCeria">
-  <link rel="canonical" href="https://test.578113.xyz/post/worldmonitor.html">
+  <link rel="canonical" href="https://test.578113.xyz/post/wrmv10/">
   <meta property="og:site_name" content="AkiNard Blog">
   <meta property="og:locale" content="zh_CN">
-  <meta property="og:image" content="https://image.578113.xyz/posts/worldmonitor.png">
+  <meta property="og:image" content="https://image.578113.xyz/posts/wrmv10.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="教你做一个超级酷的世界大屏! - AkiNard Blog">
-  <meta name="twitter:description" content="但没啥用(">
-  <meta name="twitter:image" content="https://image.578113.xyz/posts/worldmonitor.png">
+  <meta name="twitter:title" content="魔域WRM V10开箱！ - AkiNard Blog">
+  <meta name="twitter:description" content="魔域旗舰魔方&quot;万人迷&quot;V10开箱体验">
+  <meta name="twitter:image" content="https://image.578113.xyz/posts/wrmv10.jpg">
   <link rel="icon" type="image/jpeg" href="avatar.jpg">
   <link rel="apple-touch-icon" href="avatar.jpg">
   <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1c1c22" media="(prefers-color-scheme: dark)">
-  <script type="application/ld+json" id="article-ld">{"@context":"https://schema.org","@type":"Article","headline":"教你做一个超级酷的世界大屏!","description":"但没啥用(","datePublished":"2026-04-11","image":"https://image.578113.xyz/posts/worldmonitor.png","author":{"@type":"Person","name":"SkyCeria"},"mainEntityOfPage":"https://test.578113.xyz/post/worldmonitor.html"}</script>
+  <script type="application/ld+json" id="article-ld">{"@context":"https://schema.org","@type":"Article","headline":"魔域WRM V10开箱！","description":"魔域旗舰魔方\"万人迷\"V10开箱体验","datePublished":"2026-04-18","image":"https://image.578113.xyz/posts/wrmv10.jpg","author":{"@type":"Person","name":"SkyCeria"},"mainEntityOfPage":"https://test.578113.xyz/post/wrmv10/"}</script>
   <!-- og:url 会在文章加载后由 JS 更新为实际地址 -->
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="AkiNard Blog RSS" href="/rss.xml">
-  <link rel="stylesheet" href="../navbar.css?v=2">
+  <link rel="stylesheet" href="../../navbar.css?v=2">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     :root {
@@ -306,7 +306,9 @@
       will-change: transform;
     }
   </style>
-  <script>var EMBEDDED_SLUG = "worldmonitor";</script>
+  <script defer src="https://umami.578113.xyz/script.js" data-website-id="d72bd4ca-e496-42b7-ae65-13424856f679"></script>
+  <script src="../../umami.js"></script>
+  <script>var EMBEDDED_SLUG = "wrmv10";</script>
 </head>
 <body>
   <div class="reading-progress" id="reading-progress"></div>
@@ -316,7 +318,7 @@
   <nav class="navbar" aria-label="主导航">
     <div class="navbar-inner">
       <a class="navbar-brand" href="index.html" aria-label="返回首页">
-        <img class="navbar-avatar" src="../avatar.jpg" alt="AkiNard">
+        <img class="navbar-avatar" src="../../avatar.jpg" alt="AkiNard">
         <span class="navbar-title">AkiNard</span>
       </a>
       <div class="navbar-search">
@@ -351,6 +353,7 @@
     <div class="article-header">
       <h1 id="article-title">加载中...</h1>
       <div class="meta" id="article-meta"></div>
+      <div class="article-views" id="article-views" style="display:none;font-size:13px;color:var(--text-light);margin-bottom:10px;"></div>
       <div class="tags" id="article-tags"></div>
     </div>
     <div class="article-body" id="article-body">加载中...</div>
@@ -425,6 +428,20 @@
     });
     function updateBtn() { toggleBtn.innerHTML = body.classList.contains('dark') ? SUN_SVG : MOON_SVG; }
 
+    // 浏览量数字滚动动画
+    function animateCount(el, target) {
+      var duration = 1200;
+      var start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        var p = Math.min((ts - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(eased * target).toLocaleString() + ' 次阅读';
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
     const params = new URLSearchParams(window.location.search);
     const slug = (typeof EMBEDDED_SLUG !== 'undefined' && EMBEDDED_SLUG) ? EMBEDDED_SLUG : params.get('slug');
     const articleBody = document.getElementById('article-body');
@@ -487,6 +504,17 @@
               "mainEntityOfPage": window.location.href
             });
           }
+          // 文章浏览量（按无 html 的路径查询 Umami，从 0 滚动到真实值）
+          const viewsEl = document.getElementById('article-views');
+          if (viewsEl) {
+            const vEndAt = Date.now();
+            window.umamiFetch('/websites/{id}/stats', '?startAt=0&endAt=' + vEndAt + '&unit=hour&timezone=Asia%2FShanghai&url=' + encodeURIComponent(window.location.pathname))
+              .then(function (d) {
+                const n = (d && typeof d.pageviews === 'number') ? d.pageviews : 0;
+                viewsEl.style.display = '';
+                animateCount(viewsEl, n);
+              });
+          }
 
           const contentLen = (post.content || '').replace(/[#>*`~|]/g, '').length;
           const minutes = Math.max(1, Math.round(contentLen / 350));
@@ -505,14 +533,14 @@
 
           if (index > 0) {
             const prev = posts[index - 1];
-            prevLink.href = '/post/' + encodeURIComponent(prev.slug) + '.html';
+            prevLink.href = '/post/' + encodeURIComponent(prev.slug) + '/';
             prevLink.style.display = '';
             prevTitleEl.textContent = prev.title;
           } else { prevLink.style.display = 'none'; prevTitleEl.textContent = ''; }
 
           if (index < posts.length - 1) {
             const next = posts[index + 1];
-            nextLink.href = '/post/' + encodeURIComponent(next.slug) + '.html';
+            nextLink.href = '/post/' + encodeURIComponent(next.slug) + '/';
             nextLink.style.display = '';
             nextTitleEl.textContent = next.title;
           } else { nextLink.style.display = 'none'; nextTitleEl.textContent = ''; }
@@ -539,31 +567,6 @@
           document.getElementById('next-title').textContent = '';
         });
     }
-
-    // Umami 统计
-    const UMAMI_CONFIG = {
-      baseUrl: 'http://umami.578113.xyz/api',
-      websiteId: 'd72bd4ca-e496-42b7-ae65-13424856f679',
-      shareToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3ZWJzaXRlSWQiOiJkNzJiZDRjYS1lNDk2LTQyYjctYWU2NS0xMzQyNDg1NmY2NzkiLCJpYXQiOjE3ODYwOTE3ODJ9.NxnoEMp0VPSdxLdVYmuSBeAfODvWTfazF7L1lalvlLg'
-    };
-    function formatNumber(num) {
-      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-      return num.toString();
-    }
-    async function fetchUmamiStats() {
-      try {
-        const endAt = Date.now();
-        const url = `${UMAMI_CONFIG.baseUrl}/websites/${UMAMI_CONFIG.websiteId}/stats?startAt=0&endAt=${endAt}&unit=hour&timezone=Asia%2FShanghai`;
-        const resp = await fetch(url, { headers: { 'accept': 'application/json', 'x-umami-share-token': UMAMI_CONFIG.shareToken } });
-        const data = await resp.json();
-        document.getElementById('total-pageviews').textContent = formatNumber(data.pageviews || 0);
-        document.getElementById('total-visits').textContent = formatNumber(data.visits || 0);
-        document.getElementById('total-visitors').textContent = formatNumber(data.visitors || 0);
-      } catch (e) { console.error(e); }
-    }
-    document.addEventListener('DOMContentLoaded', fetchUmamiStats);
-    if (window.swup) window.swup.hooks.on('page:view', fetchUmamiStats);
   </script>
   <div class="side-widget">
     <button class="side-fab" id="side-fab" aria-label="打开快捷面板" aria-expanded="false">
@@ -581,7 +584,7 @@
     </div>
   </div>
   <div class="lightbox" id="lightbox"><img id="lightbox-img" src="" alt=""></div>
-  <script src="../navbar.js?v=4"></script>
+  <script src="../../navbar.js?v=5"></script>
   <script>
     // 阅读进度条
     (function () {

@@ -301,6 +301,8 @@
       }
     }
   </style>
+  <script defer src="https://umami.578113.xyz/script.js" data-website-id="d72bd4ca-e496-42b7-ae65-13424856f679"></script>
+  <script src="umami.js"></script>
 </head>
 <body>
   <noscript>
@@ -395,6 +397,7 @@
     let allPosts = [];
     let currentPage = 0;
     let filteredPosts = [];
+    let viewsMap = {};
 
     fetch('blog.json')
       .then(res => res.json())
@@ -412,6 +415,17 @@
       })
       .catch(() => { document.getElementById('posts-container').innerText = '加载文章失败'; });
 
+    // 卡片浏览量（Umami /pages，一条请求拿全站，按无 html 路径匹配）
+    window.umamiFetch('/websites/{id}/pages', '?startAt=0&endAt=' + Date.now() + '&unit=hour&timezone=Asia%2FShanghai&limit=100')
+      .then(list => {
+        if (!Array.isArray(list)) return;
+        list.forEach(it => { if (it && it.x) viewsMap[it.x] = it.pageviews || 0; });
+        document.querySelectorAll('.post-views').forEach(el => {
+          const n = viewsMap['/post/' + el.getAttribute('data-slug') + '/'];
+          if (typeof n === 'number') el.textContent = ' · ' + n.toLocaleString() + ' 次阅读';
+        });
+      });
+
     function renderPosts(posts, page) {
       const container = document.getElementById('posts-container');
       if (posts.length === 0) {
@@ -423,12 +437,18 @@
       const pagePosts = posts.slice(start, start + POSTS_PER_PAGE);
       container.innerHTML = pagePosts.map((post, i) => `
         <div class="post-card" style="animation-delay: ${i * 0.1}s">
-          <h2><a href="/post/${encodeURIComponent(post.slug)}.html">${post.title}</a></h2>
-          <div class="post-meta">${post.published || ''} · ${post.category || ''}</div>
+          <h2><a href="/post/${encodeURIComponent(post.slug)}/">${post.title}</a></h2>
+          <div class="post-meta">${post.published || ''} · ${post.category || ''}<span class="post-views" data-slug="${post.slug}"></span></div>
           ${post.description ? `<div class="post-desc">${post.description}</div>` : ''}
           ${post.tags && post.tags.length ? `<div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
         </div>
       `).join('');
+
+      // 填充卡片浏览量
+      document.querySelectorAll('.post-views').forEach(el => {
+        const n = viewsMap['/post/' + el.getAttribute('data-slug') + '/'];
+        if (typeof n === 'number') el.textContent = ' · ' + n.toLocaleString() + ' 次阅读';
+      });
     }
 
     function renderPagination(totalItems) {
@@ -485,31 +505,6 @@
       renderPosts(filteredPosts, currentPage);
       renderPagination(filteredPosts.length);
     });
-
-    // Umami 统计 (与首页相同)
-    const UMAMI_CONFIG = {
-      baseUrl: 'http://umami.578113.xyz/api',
-      websiteId: 'd72bd4ca-e496-42b7-ae65-13424856f679',
-      shareToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3ZWJzaXRlSWQiOiJkNzJiZDRjYS1lNDk2LTQyYjctYWU2NS0xMzQyNDg1NmY2NzkiLCJpYXQiOjE3ODYwOTE3ODJ9.NxnoEMp0VPSdxLdVYmuSBeAfODvWTfazF7L1lalvlLg'
-    };
-    function formatNumber(num) {
-      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-      return num.toString();
-    }
-    async function fetchUmamiStats() {
-      try {
-        const endAt = Date.now();
-        const url = `${UMAMI_CONFIG.baseUrl}/websites/${UMAMI_CONFIG.websiteId}/stats?startAt=0&endAt=${endAt}&unit=hour&timezone=Asia%2FShanghai`;
-        const resp = await fetch(url, { headers: { 'accept': 'application/json', 'x-umami-share-token': UMAMI_CONFIG.shareToken } });
-        const data = await resp.json();
-        document.getElementById('total-pageviews').textContent = formatNumber(data.pageviews || 0);
-        document.getElementById('total-visits').textContent = formatNumber(data.visits || 0);
-        document.getElementById('total-visitors').textContent = formatNumber(data.visitors || 0);
-      } catch (e) { console.error(e); }
-    }
-    document.addEventListener('DOMContentLoaded', fetchUmamiStats);
-    if (window.swup) window.swup.hooks.on('page:view', fetchUmamiStats);
   </script>
   <div class="side-widget">
     <button class="side-fab" id="side-fab" aria-label="打开快捷面板" aria-expanded="false">
@@ -526,6 +521,6 @@
       </button>
     </div>
   </div>
-  <script src="navbar.js?v=4"></script>
+  <script src="navbar.js?v=5"></script>
 </body>
 </html>

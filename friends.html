@@ -187,6 +187,8 @@
       }
     }
   </style>
+  <script defer src="https://umami.578113.xyz/script.js" data-website-id="d72bd4ca-e496-42b7-ae65-13424856f679"></script>
+  <script src="umami.js"></script>
 </head>
 <body>
   <noscript>
@@ -296,31 +298,6 @@
       .catch(() => {
         document.getElementById('friend-list').innerHTML = '<li style="text-align:center; color: var(--text-light);">加载失败</li>';
       });
-
-    // Umami 统计
-    const UMAMI_CONFIG = {
-      baseUrl: 'http://umami.578113.xyz/api',
-      websiteId: 'd72bd4ca-e496-42b7-ae65-13424856f679',
-      shareToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3ZWJzaXRlSWQiOiJkNzJiZDRjYS1lNDk2LTQyYjctYWU2NS0xMzQyNDg1NmY2NzkiLCJpYXQiOjE3ODYwOTE3ODJ9.NxnoEMp0VPSdxLdVYmuSBeAfODvWTfazF7L1lalvlLg'
-    };
-    function formatNumber(num) {
-      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-      return num.toString();
-    }
-    async function fetchUmamiStats() {
-      try {
-        const endAt = Date.now();
-        const url = `${UMAMI_CONFIG.baseUrl}/websites/${UMAMI_CONFIG.websiteId}/stats?startAt=0&endAt=${endAt}&unit=hour&timezone=Asia%2FShanghai`;
-        const resp = await fetch(url, { headers: { 'accept': 'application/json', 'x-umami-share-token': UMAMI_CONFIG.shareToken } });
-        const data = await resp.json();
-        document.getElementById('total-pageviews').textContent = formatNumber(data.pageviews || 0);
-        document.getElementById('total-visits').textContent = formatNumber(data.visits || 0);
-        document.getElementById('total-visitors').textContent = formatNumber(data.visitors || 0);
-      } catch (e) { console.error(e); }
-    }
-    document.addEventListener('DOMContentLoaded', fetchUmamiStats);
-    if (window.swup) window.swup.hooks.on('page:view', fetchUmamiStats);
   </script>
   <div class="side-widget">
     <button class="side-fab" id="side-fab" aria-label="打开快捷面板" aria-expanded="false">
@@ -337,6 +314,6 @@
       </button>
     </div>
   </div>
-  <script src="navbar.js?v=4"></script>
+  <script src="navbar.js?v=5"></script>
 </body>
 </html>

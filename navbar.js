@@ -182,7 +182,7 @@
           return;
         }
         suggestEl.innerHTML = matched.map(function (p) {
-          return '<a class="navbar-suggest-item" href="/post/' + encodeURIComponent(p.slug) + '.html">' +
+          return '<a class="navbar-suggest-item" href="/post/' + encodeURIComponent(p.slug) + '/">' +
             '<div class="navbar-suggest-title">' + highlight(p.title, term) + '</div>' +
             '<div class="navbar-suggest-excerpt">' + highlight(makeExcerpt(p), term) + '</div>' +
             '</a>';
