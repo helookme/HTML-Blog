@@ -76,7 +76,7 @@
     .glass-card {
       max-width: 600px;
       width: 90%;
-      margin: 20px;
+      margin: 20px auto;
       padding: 40px 24px;
       border-radius: 24px;
       background: var(--glass-bg);
@@ -114,28 +114,15 @@
     }
     .online-dot {
       position: absolute;
-      bottom: 7px;
-      right: 7px;
-      width: 14px;
-      height: 14px;
+      bottom: 6px;
+      right: 6px;
+      width: 24px;
+      height: 24px;
       background: #4caf50;
       border-radius: 50%;
       border: 3px solid var(--glass-bg);
-      box-shadow: 0 0 8px rgba(76, 175, 80, 0.65);
-      z-index: 1;
-    }
-    .online-dot::after {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: 50%;
-      border: 2px solid rgba(76, 175, 80, 0.45);
-      animation: onlinePulse 2.2s ease-out infinite;
-    }
-    @keyframes onlinePulse {
-      0% { transform: scale(0.8); opacity: 0.9; }
-      70% { transform: scale(1.8); opacity: 0; }
-      100% { transform: scale(1.8); opacity: 0; }
+      box-shadow: 0 0 6px rgba(76,175,80,0.5);
+      transition: border-color 0.5s;
     }
 
     .fade-up {
@@ -296,8 +283,8 @@
     /* 移动端：缩短页边距、卡片加宽，背景改为随页面滚动 */
     @media (max-width: 480px) {
       body { padding: 12px; }
-      .glass-card { width: 100%; margin: 8px; padding: 32px 16px; }
-      .sub-block { width: 100%; padding: 24px 16px; }
+      .glass-card { width: 100%; margin: 16px auto; padding: 32px 16px; }
+      .sub-block { width: 100%; margin: 16px auto 0; padding: 24px 16px; }
     }
 
     /* 触屏设备：去掉悬停位移带来的粘滞感 */
@@ -309,7 +296,7 @@
 
     /* 减弱动态效果：禁用动画并确保内容可见 */
     @media (prefers-reduced-motion: reduce) {
-      .glass-card, .fade-up, .avatar, .btn, .online-dot::after {
+      .glass-card, .fade-up, .avatar, .btn {
         animation: none !important;
         opacity: 1 !important;
         transform: none !important;
