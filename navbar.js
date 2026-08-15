@@ -62,6 +62,14 @@
       fab.addEventListener('click', function (e) {
         e.stopPropagation();
         panel.classList.toggle('open');
+        // 点击涟漪
+        var rect = fab.getBoundingClientRect();
+        var rip = document.createElement('span');
+        rip.className = 'ripple';
+        rip.style.left = (e.clientX - rect.left - 22) + 'px';
+        rip.style.top = (e.clientY - rect.top - 22) + 'px';
+        fab.appendChild(rip);
+        setTimeout(function () { rip.remove(); }, 650);
       });
       var toTop = document.getElementById('side-to-top');
       if (toTop) {
