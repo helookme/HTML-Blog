@@ -113,6 +113,50 @@
     .friend-name:hover { text-decoration: underline; }
     .friend-desc { font-size: 14px; color: var(--text-light); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+    /* 申请友链 */
+    .apply-block {
+      margin-top: 28px;
+      padding: 18px;
+      border-radius: 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: background 0.5s, border-color 0.5s;
+    }
+    .apply-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-light);
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+    .apply-text {
+      margin: 0 0 12px;
+      font-size: 14px;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+    .apply-qq {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      background: var(--btn-bg, #b55);
+      color: var(--btn-text, #fff);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1.2), box-shadow 0.25s, background 0.3s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .apply-qq:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); }
+    .apply-qq svg { flex-shrink: 0; }
+
     .theme-toggle {
       background: var(--glass-bg);
       backdrop-filter: blur(12px);
@@ -230,12 +274,30 @@
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         友链
       </a>
+      <a class="nav-menu-item" href="/about.html">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        关于
+      </a>
     </div>
   </nav>
 
   <div class="glass-card" role="main">
     <h1>朋友们</h1>
     <ul class="friend-list" id="friend-list"></ul>
+
+    <!-- 申请友链 -->
+    <div class="apply-block">
+      <div class="apply-title">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        申请友链
+      </div>
+      <p class="apply-text">欢迎交换友链喵～先添加本站链接，再带上你的站点名称、地址、头像和简介联系申请：</p>
+      <a class="apply-qq" href="https://wpa.qq.com/msgrd?v=3&uin=3833773438&site=qq&menu=yes" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        QQ：3833773438
+      </a>
+    </div>
+
     <a class="back-link" href="/index.html">← 返回首页</a>
 
     <!-- Umami 统计卡片 -->

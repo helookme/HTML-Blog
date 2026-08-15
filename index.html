@@ -143,13 +143,51 @@
     .delay-1 { animation-delay: 0.1s; }
     .delay-2 { animation-delay: 0.3s; }
     .delay-3 { animation-delay: 0.5s; }
+    .delay-4 { animation-delay: 0.7s; }
+    .delay-5 { animation-delay: 0.9s; }
+
+    /* 全站总字数 */
+    .word-count {
+      font-size: 13px;
+      color: var(--text-light);
+      margin: 2px 0 14px;
+      letter-spacing: 0.03em;
+    }
+
+    /* 联系方式一行 */
+    .contact-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .contact-row a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      border: 1px solid rgba(128, 128, 128, 0.3);
+      color: var(--text);
+      text-decoration: none;
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1.2), box-shadow 0.3s, color 0.3s;
+    }
+    .contact-row a:hover {
+      transform: translateY(-3px) scale(1.08);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      color: var(--btn-bg);
+    }
+    .contact-row iconify-icon { font-size: 20px; }
 
     .signature {
       font-size: 16px;
       color: var(--text-light);
-      margin-bottom: 30px;
+      margin-bottom: 12px;
       line-height: 1.6;
-      min-height: 3em;
+      min-height: 1.8em;
     }
 
     .btn {
@@ -267,7 +305,7 @@
 
     /* 触屏设备：去掉悬停位移带来的粘滞感 */
     @media (hover: none), (pointer: coarse) {
-      .glass-card:hover, .btn:hover, .footer-links a:hover {
+      .glass-card:hover, .btn:hover, .footer-links a:hover, .contact-row a:hover {
         transform: none !important;
       }
     }
@@ -290,6 +328,7 @@
   </style>
   <script defer src="https://umami.578113.xyz/script.js" data-website-id="d72bd4ca-e496-42b7-ae65-13424856f679"></script>
   <script src="umami.js"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 </head>
 <body>
   <noscript>
@@ -303,9 +342,19 @@
       <span class="online-dot"></span>
     </div>
     <p class="signature fade-up delay-2" id="typewriter"></p>
-    <div class="fade-up delay-3">
+    <div class="word-count fade-up delay-3" id="word-count"></div>
+    <div class="fade-up delay-4">
       <a class="btn" href="blog.html">阅读博客</a>
       <a class="btn" href="friends.html">友情链接</a>
+      <a class="btn" href="about.html">关于本站</a>
+    </div>
+    <div class="contact-row fade-up delay-5">
+      <a href="https://qm.qq.com/q/DY8ObVCg48" target="_blank" rel="noopener" aria-label="QQ"><iconify-icon icon="simple-icons:tencentqq"></iconify-icon></a>
+      <a href="https://space.bilibili.com/3493272089529233" target="_blank" rel="noopener" aria-label="哔哩哔哩"><iconify-icon icon="simple-icons:bilibili"></iconify-icon></a>
+      <a href="https://discord.gg/F82remF6Uq" target="_blank" rel="noopener" aria-label="Discord"><iconify-icon icon="simple-icons:discord"></iconify-icon></a>
+      <a href="https://t.me/AkiNard" target="_blank" rel="noopener" aria-label="Telegram"><iconify-icon icon="simple-icons:telegram"></iconify-icon></a>
+      <a href="https://youtube.com/@SkyCeria233" target="_blank" rel="noopener" aria-label="YouTube"><iconify-icon icon="simple-icons:youtube"></iconify-icon></a>
+      <a href="https://github.com/helookme" target="_blank" rel="noopener" aria-label="GitHub"><iconify-icon icon="simple-icons:github"></iconify-icon></a>
     </div>
 
     <!-- Umami 统计卡片 -->
@@ -355,7 +404,7 @@
     function updateBtn() { toggleBtn.innerHTML = body.classList.contains('dark') ? SUN_SVG : MOON_SVG; }
 
     // 打字机效果
-    const text = "世间万物不及你.\n这里是 @SkyCeria 的个人博客。";
+    const text = "世间万物不及你.";
     const el = document.getElementById('typewriter');
     let i = 0;
     function type() {
@@ -367,6 +416,18 @@
       }
     }
     setTimeout(type, 300);
+
+    // 全站总字数
+    (function () {
+      fetch('/blog.json').then(function (r) { return r.json(); }).then(function (posts) {
+        if (!Array.isArray(posts)) return;
+        var total = posts.reduce(function (sum, p) {
+          return sum + (p.content ? p.content.replace(/[#>*`~|]/g, '').length : 0);
+        }, 0);
+        var el = document.getElementById('word-count');
+        if (el) el.textContent = '全站总字数：' + total.toLocaleString() + '字';
+      }).catch(function () {});
+    })();
   </script>
   <script>
     (function () {
