@@ -50,13 +50,13 @@
       --glass-bg: rgba(30, 30, 30, 0.5);
       --text: #eee;
       --text-light: #bbb;
-      --link: #cc7;
+      --link: #b39ddb;
       --tag-bg: rgba(255,255,255,0.1);
       --tag-text: #ddd;
       --border: rgba(255,255,255,0.15);
       --code-bg: rgba(255,255,255,0.1);
       --blockquote-bg: rgba(255,255,255,0.05);
-      --blockquote-border: #cc7;
+      --blockquote-border: #b39ddb;
       --bg: #1c1c22;
     }
 
@@ -163,7 +163,7 @@
       border-radius: 0 8px 8px 0;
     }
     .article-body mark { background-color: #ffeb3b; color: #000; padding: 0 2px; border-radius: 2px; }
-    .dark .article-body mark { background-color: #b59f00; color: #fff; }
+    .dark .article-body mark { background-color: #8a77d8; color: #fff; }
     .article-body img { max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s; }
     .article-body img:hover { transform: scale(1.02); }
     .article-body ul, .article-body ol { padding-left: 1.5em; }
@@ -179,9 +179,32 @@
     }
     .article-body a:hover { background-size: 100% 1px; }
 
-    .nav { margin-top: 40px; display: flex; justify-content: space-between; }
-    .nav a { color: var(--link); text-decoration: none; }
-    .nav-titles { display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px; color: var(--text-light); }
+    .nav { margin-top: 40px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .nav a {
+      color: var(--link);
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1.2), box-shadow 0.3s, border-color 0.3s, background 0.3s;
+    }
+    .nav a:hover {
+      transform: translateY(-2px);
+      border-color: var(--link);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    .nav #blog-link {
+      background: var(--link);
+      color: #fff;
+      border-color: transparent;
+    }
+    .dark .nav #blog-link { color: #111; }
+    .nav-titles { display: flex; justify-content: space-between; margin-top: 10px; font-size: 13px; color: var(--text-light); }
     .nav-title { max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     .theme-toggle {
@@ -220,15 +243,6 @@
     .giscus { margin-top: 4px; }
 
     /* Umami 统计卡片 */
-    .umami-stats-glass {
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 16px;
-      padding: 18px;
-      margin-top: 24px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    }
     .umami-stats-container { text-align: center; color: var(--text); }
     .umami-stats-header { font-weight: 600; margin-bottom: 12px; font-size: 14px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px; }
     .umami-stats-total { padding-bottom: 12px; margin-bottom: 8px; }
@@ -244,11 +258,12 @@
     @media (max-width: 480px) {
       body { padding: 12px; }
       .glass-card { width: 100%; margin: 16px auto; padding: 24px 16px; }
+      .sub-block { padding: 24px 16px; }
     }
 
     /* 触屏设备：去掉悬停位移带来的粘滞感 */
     @media (hover: none), (pointer: coarse) {
-      .glass-card:hover, .tag:hover, .article-body a:hover,
+      .glass-card:hover, .tag:hover, .article-body a:hover, .nav a:hover,
       .article-body img:hover, .footer-links a:hover {
         transform: none !important;
       }
@@ -275,7 +290,7 @@
       transition: width 0.1s linear;
       pointer-events: none;
     }
-    .dark .reading-progress { background: linear-gradient(90deg, #cc7, #e6d98f); }
+    .dark .reading-progress { background: linear-gradient(90deg, #b39ddb, #c9b8ee); }
 
     /* 图片灯箱（支持捏合/双击缩放） */
     .article-body img { cursor: zoom-in; touch-action: manipulation; }
@@ -322,6 +337,21 @@
     @keyframes letterIn { to { opacity: 1; transform: none; } }
     @media (prefers-reduced-motion: reduce) {
       .article-header h1 .letter { animation: none !important; opacity: 1 !important; transform: none !important; }
+    }
+    /* 独立玻璃块（统计 / 页脚） */
+    .sub-block {
+      width: 100%;
+      max-width: 700px;
+      margin: 24px auto 0;
+      padding: 24px;
+      border-radius: 24px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      color: var(--text);
+      transition: background 0.5s;
+      animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     }
   </style>
   <script defer src="https://umami.578113.xyz/script.js" data-website-id="d72bd4ca-e496-42b7-ae65-13424856f679"></script>
@@ -394,30 +424,29 @@
     <div class="umami-stats-header"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> 评论</div>
     <div class="giscus"></div>
 
-    <!-- Umami 统计卡片分块 -->
-    <div class="block-divider"></div>
-    <div class="umami-stats-glass">
-      <div class="umami-stats-container">
-        <div class="umami-stats-header">统计</div>
-        <div class="umami-stats-total">
-          <div id="total-pageviews" class="umami-stat-number" style="font-size: 1.875rem;">-</div>
-          <div class="umami-stat-label">总浏览量</div>
+  </div>
+
+  <div class="sub-block" role="region" aria-label="统计">
+    <div class="umami-stats-container">
+      <div class="umami-stats-header">统计</div>
+      <div class="umami-stats-total">
+        <div id="total-pageviews" class="umami-stat-number" style="font-size: 1.875rem;">-</div>
+        <div class="umami-stat-label">总浏览量</div>
+      </div>
+      <div class="umami-stats-bottom">
+        <div class="umami-stat-item">
+          <div id="total-visits" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
+          <div class="umami-stat-label">访问数</div>
         </div>
-        <div class="umami-stats-bottom">
-          <div class="umami-stat-item">
-            <div id="total-visits" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
-            <div class="umami-stat-label">访问数</div>
-          </div>
-          <div class="umami-stat-item">
-            <div id="total-visitors" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
-            <div class="umami-stat-label">游客数</div>
-          </div>
+        <div class="umami-stat-item">
+          <div id="total-visitors" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
+          <div class="umami-stat-label">游客数</div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="block-divider"></div>
-
+  <div class="sub-block" role="contentinfo">
     <div class="footer-links">
       © 2026 SkyCeria. All Rights Reserved. /
       <a href="/rss.xml">RSS</a> /
@@ -615,7 +644,7 @@
     </div>
   </div>
   <div class="lightbox" id="lightbox"><img id="lightbox-img" src="" alt=""></div>
-  <script src="navbar.js?v=6"></script>
+  <script src="navbar.js?v=8"></script>
   <script>
     // 阅读进度条
     (function () {

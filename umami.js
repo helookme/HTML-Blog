@@ -19,14 +19,31 @@
   }
 
   // 通用统计请求：umamiFetch('/websites/{id}/stats', '?startAt=...') -> Promise<json|null>
+  // 结果缓存到 localStorage（10 分钟内不重复请求，key 已去掉变化的 endAt）
+  var CACHE_TTL = 10 * 60 * 1000;
   window.umamiFetch = function (path, query) {
     return new Promise(function (resolve) {
+      var normQuery = (query || '').replace(/endAt=\d+/g, '');
+      var cacheKey = 'umami:' + path + ':' + normQuery;
+      try {
+        var hit = localStorage.getItem(cacheKey);
+        if (hit) {
+          var parsed = JSON.parse(hit);
+          if (parsed && Date.now() - parsed.ts < CACHE_TTL) {
+            resolve(parsed.data);
+            return;
+          }
+        }
+      } catch (e) { /* 忽略缓存错误 */ }
       loadConfig(function (c) {
         if (!c) { resolve(null); return; }
         var url = BASE + path.replace('{id}', c.websiteId) + (query || '');
         fetch(url, { headers: { 'accept': 'application/json', 'x-umami-share-token': c.token } })
           .then(function (r) { return r.json(); })
-          .then(resolve)
+          .then(function (data) {
+            try { localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data: data })); } catch (e) { /* 存储失败不阻塞 */ }
+            resolve(data);
+          })
           .catch(function () { resolve(null); });
       });
     });

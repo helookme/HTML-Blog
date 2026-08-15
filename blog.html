@@ -49,12 +49,12 @@
       --card-bg: rgba(50, 50, 50, 0.4);
       --text: #eee;
       --text-light: #bbb;
-      --link: #cc7;
+      --link: #b39ddb;
       --tag-bg: rgba(255,255,255,0.1);
       --tag-text: #ddd;
       --border: rgba(255,255,255,0.15);
       --pagination-bg: rgba(255,255,255,0.08);
-      --pagination-active: #cc7;
+      --pagination-active: #b39ddb;
       --pagination-text: #ccc;
       --bg: #1c1c22;
     }
@@ -257,15 +257,6 @@
     .footer-links a:hover { color: var(--link); }
 
     /* Umami 统计卡片 */
-    .umami-stats-glass {
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 16px;
-      padding: 18px;
-      margin-top: 24px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    }
     .umami-stats-container { text-align: center; color: var(--text); }
     .umami-stats-header { font-weight: 600; margin-bottom: 12px; font-size: 14px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }
     .umami-stats-total { padding-bottom: 12px; margin-bottom: 8px; }
@@ -281,6 +272,7 @@
     @media (max-width: 480px) {
       body { padding: 12px; }
       .glass-card { width: 100%; margin: 16px auto; padding: 20px 16px; }
+      .sub-block { padding: 20px 16px; }
     }
 
     /* 触屏设备：去掉悬停位移带来的粘滞感 */
@@ -305,6 +297,21 @@
     ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.25s; }
     @media (prefers-reduced-motion: reduce) {
       ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+    }
+    /* 独立玻璃块（统计 / 页脚） */
+    .sub-block {
+      width: 100%;
+      max-width: 600px;
+      margin: 24px auto 0;
+      padding: 24px;
+      border-radius: 24px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      color: var(--text);
+      transition: background 0.5s;
+      animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     }
   </style>
   <script defer src="https://umami.578113.xyz/script.js" data-website-id="d72bd4ca-e496-42b7-ae65-13424856f679"></script>
@@ -358,27 +365,29 @@
     <div class="pagination" id="pagination"></div>
     <a class="back-link" href="/index.html">← 返回首页</a>
 
-    <!-- Umami 统计卡片 -->
-    <div class="umami-stats-glass">
-      <div class="umami-stats-container">
-        <div class="umami-stats-header">统计</div>
-        <div class="umami-stats-total">
-          <div id="total-pageviews" class="umami-stat-number" style="font-size: 1.875rem;">-</div>
-          <div class="umami-stat-label">总浏览量</div>
+  </div>
+
+  <div class="sub-block" role="region" aria-label="统计">
+    <div class="umami-stats-container">
+      <div class="umami-stats-header">统计</div>
+      <div class="umami-stats-total">
+        <div id="total-pageviews" class="umami-stat-number" style="font-size: 1.875rem;">-</div>
+        <div class="umami-stat-label">总浏览量</div>
+      </div>
+      <div class="umami-stats-bottom">
+        <div class="umami-stat-item">
+          <div id="total-visits" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
+          <div class="umami-stat-label">访问数</div>
         </div>
-        <div class="umami-stats-bottom">
-          <div class="umami-stat-item">
-            <div id="total-visits" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
-            <div class="umami-stat-label">访问数</div>
-          </div>
-          <div class="umami-stat-item">
-            <div id="total-visitors" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
-            <div class="umami-stat-label">游客数</div>
-          </div>
+        <div class="umami-stat-item">
+          <div id="total-visitors" class="umami-stat-number" style="font-size: 1.25rem;">-</div>
+          <div class="umami-stat-label">游客数</div>
         </div>
       </div>
     </div>
+  </div>
 
+  <div class="sub-block" role="contentinfo">
     <div class="footer-links">
       © 2026 SkyCeria. All Rights Reserved. /
       <a href="/rss.xml">RSS</a> /
@@ -539,6 +548,6 @@
       </button>
     </div>
   </div>
-  <script src="navbar.js?v=6"></script>
+  <script src="navbar.js?v=8"></script>
 </body>
 </html>

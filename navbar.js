@@ -58,10 +58,26 @@
     // ===== 侧拉栏（返回顶部 / 复制链接） =====
     var fab = document.getElementById('side-fab');
     var panel = document.getElementById('side-panel');
+    function setPanelIcon(open) {
+      if (!fab) return;
+      var svg = fab.querySelector('svg');
+      if (!svg) return;
+      svg.innerHTML = open
+        ? '<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>'
+        : '<circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/>';
+      svg.classList.remove('fab-icon-spin');
+      void svg.offsetWidth;
+      svg.classList.add('fab-icon-spin');
+    }
+    function setPanel(open) {
+      if (!panel) return;
+      panel.classList.toggle('open', open);
+      setPanelIcon(open);
+    }
     if (fab && panel) {
       fab.addEventListener('click', function (e) {
         e.stopPropagation();
-        panel.classList.toggle('open');
+        setPanel(!panel.classList.contains('open'));
         // 点击涟漪
         var rect = fab.getBoundingClientRect();
         var rip = document.createElement('span');
@@ -106,11 +122,11 @@
     document.addEventListener('click', function (e) {
       if (!e.target.closest('.navbar')) closeMenu();
       if (!e.target.closest('.navbar-search')) closeSuggest();
-      if (!e.target.closest('.side-widget')) { if (panel) panel.classList.remove('open'); }
+      if (!e.target.closest('.side-widget')) setPanel(false);
     });
     // Esc 关闭
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') { closeMenu(); closeSuggest(); if (panel) panel.classList.remove('open'); }
+      if (e.key === 'Escape') { closeMenu(); closeSuggest(); setPanel(false); }
     });
 
     // ===== 下滑隐藏 / 上滑显示 =====
@@ -127,7 +143,7 @@
       }
       if (fab) {
         if (y > 120) fab.classList.add('show');
-        else { fab.classList.remove('show'); if (panel) panel.classList.remove('open'); }
+        else { fab.classList.remove('show'); setPanel(false); }
       }
       lastScrollY = y;
       ticking = false;
@@ -225,6 +241,26 @@
         }
       });
     }
+
+    // ===== 点击同页链接不重复加载 =====
+    function samePageClick(e) {
+      var href = (e.currentTarget.getAttribute('href') || '').split('#')[0].split('?')[0];
+      if (!href || href.indexOf('http') === 0) return;
+      var norm = function (p) {
+        if (p === '/' || p === '') return '/index.html';
+        return p;
+      };
+      if (norm(href) === norm(window.location.pathname)) {
+        e.preventDefault();
+        if ((window.pageYOffset || 0) > 0) {
+          try { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+          catch (err) { window.scrollTo(0, 0); }
+        }
+      }
+    }
+    document.querySelectorAll('.navbar a').forEach(function (a) {
+      a.addEventListener('click', samePageClick);
+    });
 
     // ===== 显示部署 commit 哈希 =====
     var commitEl = document.getElementById('commit-hash');

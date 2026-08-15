@@ -92,8 +92,8 @@
   box-shadow: 0 0 0 3px rgba(181, 85, 85, 0.18);
 }
 .dark .navbar-search input:focus {
-  border-color: #cc7;
-  box-shadow: 0 0 0 3px rgba(204, 204, 119, 0.18);
+  border-color: #b39ddb;
+  box-shadow: 0 0 0 3px rgba(179, 157, 219, 0.18);
 }
 
 /* 右侧：切换 + 汉堡 */
@@ -175,7 +175,7 @@
   background: rgba(181, 85, 85, 0.12);
   transform: translateX(3px);
 }
-.dark .nav-menu-item:hover { background: rgba(204, 204, 119, 0.12); }
+.dark .nav-menu-item:hover { background: rgba(179, 157, 219, 0.12); }
 .nav-menu-item svg { flex-shrink: 0; }
 
 /* ===== 搜索联想下拉 ===== */
@@ -218,7 +218,7 @@
   max-width: 100%;
 }
 .navbar-suggest-item:hover { background: rgba(181, 85, 85, 0.1); }
-.dark .navbar-suggest-item:hover { background: rgba(204, 204, 119, 0.1); }
+.dark .navbar-suggest-item:hover { background: rgba(179, 157, 219, 0.1); }
 .navbar-suggest-title {
   font-size: 14px;
   font-weight: 600;
@@ -243,7 +243,7 @@
   border-radius: 3px;
   padding: 0 2px;
 }
-.dark .navbar-suggest mark { background: rgba(204, 204, 119, 0.35); }
+.dark .navbar-suggest mark { background: rgba(179, 157, 219, 0.35); }
 .navbar-suggest-empty {
   padding: 12px;
   font-size: 13px;
@@ -307,8 +307,12 @@ html, body { touch-action: manipulation; }
 .dark .side-fab { background: rgba(35, 35, 40, 0.7); color: #eee; }
 .side-fab.show { opacity: 1; transform: none; pointer-events: auto; }
 .side-fab:active { transform: scale(0.92); }
-.side-fab svg { display: block; transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
-.side-fab.open svg { transform: rotate(90deg); }
+.side-fab svg { display: block; }
+.side-fab .fab-icon-spin { animation: fabIconSpin 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes fabIconSpin {
+  from { transform: rotate(-90deg); opacity: 0.4; }
+  to { transform: rotate(0deg); opacity: 1; }
+}
 
 /* 点击涟漪 */
 .side-fab .ripple {
@@ -321,7 +325,7 @@ html, body { touch-action: manipulation; }
   animation: fabRipple 0.6s ease-out forwards;
   pointer-events: none;
 }
-.dark .side-fab .ripple { background: rgba(204, 204, 119, 0.3); }
+.dark .side-fab .ripple { background: rgba(179, 157, 219, 0.3); }
 @keyframes fabRipple {
   from { transform: scale(0); opacity: 0.5; }
   to { transform: scale(1); opacity: 0; }
@@ -364,7 +368,7 @@ html, body { touch-action: manipulation; }
   transition: background 0.2s;
 }
 .side-panel-item:hover { background: rgba(181, 85, 85, 0.12); }
-.dark .side-panel-item:hover { background: rgba(204, 204, 119, 0.12); }
+.dark .side-panel-item:hover { background: rgba(179, 157, 219, 0.12); }
 .side-panel-item svg { flex-shrink: 0; }
 
 /* 移动端位置微调 */
@@ -375,6 +379,6 @@ html, body { touch-action: manipulation; }
 
 @media (prefers-reduced-motion: reduce) {
   .side-fab, .side-panel, .side-panel-item { transition: none !important; }
-  .side-fab svg { transition: none !important; }
+  .side-fab .fab-icon-spin { animation: none !important; }
   .side-fab .ripple { animation: none !important; }
 }
