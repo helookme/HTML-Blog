@@ -131,6 +131,9 @@ ${sitemapItems}
 
 fs.writeFileSync(sitemapFile, sitemap);
 console.log('sitemap.xml 已生成');
+// 第二份 sitemap：sitemap-0.xml（内容相同，供 Google 提交用）
+fs.writeFileSync(path.join(__dirname, 'sitemap-0.xml'), sitemap);
+console.log('sitemap-0.xml 已生成');
 
 function escapeXml(str) {
   return str.replace(/&/g, '&amp;')
