@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // ========== 请改成你自己的域名 ==========
-const SITE_URL = 'https://test.578113.xyz';
+const SITE_URL = 'https://blog.578113.xyz';
 
 const blogDir = path.join(__dirname, 'content', 'blog');
 const blogJsonFile = path.join(__dirname, 'blog.json');
@@ -170,6 +170,9 @@ posts.forEach(post => {
     "headline": post.title,
     "description": post.description || '',
     "datePublished": post.published || '',
+    "dateModified": post.published || '',
+    "articleSection": post.category || '',
+    "wordCount": (post.content || '').replace(/[#>*`~|]/g, '').length,
     "image": postImg,
     "author": { "@type": "Person", "name": "SkyCeria" },
     "mainEntityOfPage": postUrl
@@ -191,6 +194,17 @@ posts.forEach(post => {
   html = html.replace(/href="navbar\.css\?v=/, 'href="../../navbar.css?v=');
   html = html.replace(/src="navbar\.js\?v=/, 'src="../../navbar.js?v=');
   html = html.replace(/src="umami\.js"/, 'src="../../umami.js"');
+  // 面包屑结构化数据（首页 > 文章列表 > 标题）
+  const breadcrumbJson = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "首页", "item": `${SITE_URL}/` },
+      { "@type": "ListItem", "position": 2, "name": "文章列表", "item": `${SITE_URL}/blog.html` },
+      { "@type": "ListItem", "position": 3, "name": post.title, "item": postUrl }
+    ]
+  });
+  html = html.replace('</head>', `  <script type="application/ld+json">${breadcrumbJson}</script>\n</head>`);
   html = html.replace('</head>', `  <script>var EMBEDDED_SLUG = ${JSON.stringify(post.slug)};</script>\n</head>`);
 
   const pageDir = path.join(postDir, post.slug);

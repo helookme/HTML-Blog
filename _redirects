@@ -1,2 +1,6 @@
 /post/*.html /posts/:splat/ 301
 /post/* /posts/:splat/ 301
+/about /about.html 301
+/about/ /about.html 301
+/friends /friends.html 301
+/friends/ /friends.html 301

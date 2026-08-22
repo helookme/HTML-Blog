@@ -11,22 +11,23 @@
   <meta property="og:title" content="阅读文章 - AkiNard Blog">
   <meta property="og:description" content="AkiNard Blog 文章">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://test.578113.xyz/reader.html">
+  <meta property="og:url" content="https://blog.578113.xyz/reader.html">
   <meta name="robots" content="index, follow">
   <meta name="author" content="SkyCeria">
-  <link rel="canonical" href="https://test.578113.xyz/reader.html">
+  <link rel="canonical" href="https://blog.578113.xyz/reader.html">
   <meta property="og:site_name" content="AkiNard Blog">
   <meta property="og:locale" content="zh_CN">
-  <meta property="og:image" content="https://test.578113.xyz/avatar.jpg">
+  <meta property="og:image" content="https://blog.578113.xyz/avatar.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="阅读文章 - AkiNard Blog">
   <meta name="twitter:description" content="AkiNard Blog 文章">
-  <meta name="twitter:image" content="https://test.578113.xyz/avatar.jpg">
+  <meta name="twitter:image" content="https://blog.578113.xyz/avatar.jpg">
   <link rel="icon" type="image/jpeg" href="avatar.jpg">
   <link rel="apple-touch-icon" href="avatar.jpg">
   <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1c1c22" media="(prefers-color-scheme: dark)">
   <script type="application/ld+json" id="article-ld"></script>
+  <script type="application/ld+json" id="breadcrumb-ld"></script>
   <!-- og:url 会在文章加载后由 JS 更新为实际地址 -->
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="AkiNard Blog RSS" href="/rss.xml">
@@ -356,6 +357,8 @@
     /* 页脚块收紧内边距 */
     .sub-block[role="contentinfo"] { padding: 18px 24px; }
   </style>
+  <link rel="preconnect" href="https://umami.578113.xyz">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <script defer src="https://umami.578113.xyz/script.js" data-website-id="d72bd4ca-e496-42b7-ae65-13424856f679"></script>
   <script src="umami.js"></script>
 </head>
@@ -552,7 +555,7 @@
           document.querySelector('meta[property="og:description"]').setAttribute('content', post.description || '');
           document.querySelector('meta[property="og:url"]').setAttribute('content', window.location.href);
           // SEO：og:image / Twitter / Article 结构化数据
-          const ogImg = post.image || 'https://test.578113.xyz/avatar.jpg';
+          const ogImg = post.image || 'https://blog.578113.xyz/avatar.jpg';
           document.querySelector('meta[property="og:image"]').setAttribute('content', ogImg);
           document.querySelector('meta[name="twitter:title"]').setAttribute('content', post.title + ' - AkiNard Blog');
           document.querySelector('meta[name="twitter:description"]').setAttribute('content', post.description || '');
@@ -565,9 +568,24 @@
               "headline": post.title,
               "description": post.description || '',
               "datePublished": post.published || '',
+              "dateModified": post.published || '',
+              "articleSection": post.category || '',
+              "wordCount": (post.content || '').replace(/[#>*`~|]/g, '').length,
               "image": ogImg,
               "author": { "@type": "Person", "name": "SkyCeria" },
               "mainEntityOfPage": window.location.href
+            });
+          }
+          const bld = document.getElementById('breadcrumb-ld');
+          if (bld) {
+            bld.textContent = JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://blog.578113.xyz/" },
+                { "@type": "ListItem", "position": 2, "name": "文章列表", "item": "https://blog.578113.xyz/blog.html" },
+                { "@type": "ListItem", "position": 3, "name": post.title, "item": window.location.href }
+              ]
             });
           }
           // 文章浏览量：/stats + path=eq. 精确匹配单篇（v3 语法，已实测确认）
@@ -617,6 +635,10 @@
           marked.setOptions({ breaks: true, gfm: true });
           const bodyContent = md.replace(/^---[\s\S]*?---\n*/, '');
           articleBody.innerHTML = marked.parse(bodyContent);
+          // 图片懒加载
+          articleBody.querySelectorAll('img').forEach(img => {
+            if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
+          });
         })
         .catch(err => {
           articleBody.innerText = '文章加载失败：' + err.message;
