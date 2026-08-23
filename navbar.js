@@ -237,7 +237,7 @@
       navbarSearch.addEventListener('input', function () { onSearchInput(navbarSearch.value); });
       navbarSearch.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && navbarSearch.value.trim()) {
-          location.href = 'blog.html?q=' + encodeURIComponent(navbarSearch.value.trim());
+          location.href = 'blog?q=' + encodeURIComponent(navbarSearch.value.trim());
         }
       });
     }
@@ -247,7 +247,7 @@
       var href = (e.currentTarget.getAttribute('href') || '').split('#')[0].split('?')[0];
       if (!href || href.indexOf('http') === 0) return;
       var norm = function (p) {
-        if (p === '/' || p === '') return '/index.html';
+        if (p === '/' || p === '') return '/';
         return p;
       };
       if (norm(href) === norm(window.location.pathname)) {

@@ -116,15 +116,12 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>${SITE_URL}/</loc>
-    <priority>1.0</priority>
   </url>
   <url>
-    <loc>${SITE_URL}/blog.html</loc>
-    <priority>0.9</priority>
+    <loc>${SITE_URL}/blog</loc>
   </url>
   <url>
-    <loc>${SITE_URL}/friends.html</loc>
-    <priority>0.5</priority>
+    <loc>${SITE_URL}/friends</loc>
   </url>
 ${sitemapItems}
 </urlset>`;
@@ -185,9 +182,9 @@ posts.forEach(post => {
   html = html.replace(/<title>阅读文章 - AkiNard Blog<\/title>/, `<title>${escTitle} - AkiNard Blog</title>`);
   html = html.replace(/<meta property="og:title" content="阅读文章 - AkiNard Blog">/, `<meta property="og:title" content="${escTitle} - AkiNard Blog">`);
   html = html.replace(/<meta property="og:description" content="AkiNard Blog 文章">/, `<meta property="og:description" content="${escDesc}">`);
-  html = html.replace(/<meta property="og:url" content="[^"]*reader\.html">/, `<meta property="og:url" content="${postUrl}">`);
+  html = html.replace(/<meta property="og:url" content="[^"]*reader[^"]*">/, `<meta property="og:url" content="${postUrl}">`);
   html = html.replace(/<meta property="og:image" content="[^"]*avatar\.jpg">/, `<meta property="og:image" content="${postImg}">`);
-  html = html.replace(/<link rel="canonical" href="[^"]*reader\.html">/, `<link rel="canonical" href="${postUrl}">`);
+  html = html.replace(/<link rel="canonical" href="[^"]*reader[^"]*">/, `<link rel="canonical" href="${postUrl}">`);
   html = html.replace(/<meta name="twitter:title" content="阅读文章 - AkiNard Blog">/, `<meta name="twitter:title" content="${escTitle} - AkiNard Blog">`);
   html = html.replace(/<meta name="twitter:description" content="AkiNard Blog 文章">/, `<meta name="twitter:description" content="${escDesc}">`);
   html = html.replace(/<meta name="twitter:image" content="[^"]*avatar\.jpg">/, `<meta name="twitter:image" content="${postImg}">`);
@@ -203,7 +200,7 @@ posts.forEach(post => {
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "首页", "item": `${SITE_URL}/` },
-      { "@type": "ListItem", "position": 2, "name": "文章列表", "item": `${SITE_URL}/blog.html` },
+      { "@type": "ListItem", "position": 2, "name": "文章列表", "item": `${SITE_URL}/blog` },
       { "@type": "ListItem", "position": 3, "name": post.title, "item": postUrl }
     ]
   });
