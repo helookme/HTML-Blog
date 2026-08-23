@@ -7,7 +7,6 @@ const SITE_URL = 'https://blog.578113.xyz';
 const blogDir = path.join(__dirname, 'content', 'blog');
 const blogJsonFile = path.join(__dirname, 'blog.json');
 const rssFile = path.join(__dirname, 'rss.xml');
-const sitemapFile = path.join(__dirname, 'sitemap.xml');
 
 function parseFrontmatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---\n/);
@@ -126,11 +125,18 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 ${sitemapItems}
 </urlset>`;
 
-fs.writeFileSync(sitemapFile, sitemap);
-console.log('sitemap.xml 已生成');
-// 第二份 sitemap：sitemap-0.xml（内容相同，供 Google 提交用）
+// sitemap-0.xml：实际 urlset（无后缀 URL）
 fs.writeFileSync(path.join(__dirname, 'sitemap-0.xml'), sitemap);
 console.log('sitemap-0.xml 已生成');
+// sitemap-index.xml：sitemap 索引，引用 sitemap-0.xml
+const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${SITE_URL}/sitemap-0.xml</loc>
+  </sitemap>
+</sitemapindex>`;
+fs.writeFileSync(path.join(__dirname, 'sitemap-index.xml'), sitemapIndex);
+console.log('sitemap-index.xml 已生成');
 
 function escapeXml(str) {
   return str.replace(/&/g, '&amp;')
@@ -150,7 +156,7 @@ console.log('commit.json 已生成');
 // ========== 生成 robots.txt ==========
 const robots = `User-agent: *
 Allow: /
-Sitemap: ${SITE_URL}/sitemap.xml`;
+Sitemap: ${SITE_URL}/sitemap-index.xml`;
 fs.writeFileSync(path.join(__dirname, 'robots.txt'), robots);
 console.log('robots.txt 已生成');
 
