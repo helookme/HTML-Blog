@@ -202,9 +202,14 @@
      (max-width: 768px) {
       body { background-image: url('background-mobile.webp'); }
     }
+      /* UA 检测：手机端背景图（横屏/大屏手机也能命中） */
+    html.ua-mobile body { background-image: url('background-mobile.webp'); }
   </style>
     <!-- MiSans 简繁中文 WebFont -->
     <link rel="stylesheet" href="/fonts/misans-web-vf-font/MiSans.min.css">
+      <script>
+      (function(){var m=false;try{if(navigator.userAgentData&&navigator.userAgentData.mobile)m=true}catch(e){}if(!m)m=/Mobile|Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent||'');if(m)document.documentElement.className+=' ua-mobile';})();
+    </script>
   </head>
 <body>
   <noscript>
