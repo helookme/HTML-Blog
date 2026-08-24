@@ -60,11 +60,11 @@
     }
 
     body {
-      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", serif;
+      font-family: "misans-web-vf-font", "PingFang SC", "Microsoft YaHei", sans-serif;
       margin: 0;
       padding: 20px;
       background-color: var(--bg, #f5f5f7);
-      background-image: url('https://api.komll.com/images');
+      background-image: url('background.webp');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -74,7 +74,7 @@
     }
 
     .glass-card {
-      max-width: 600px;
+      max-width: 720px;
       margin: 40px auto;
       padding: 24px;
       border-radius: 24px;
@@ -301,7 +301,7 @@
     /* 独立玻璃块（统计 / 页脚） */
     .sub-block {
       width: 100%;
-      max-width: 600px;
+      max-width: 720px;
       margin: 24px auto 0;
       padding: 24px;
       border-radius: 24px;
@@ -315,11 +315,17 @@
     }
     /* 页脚块收紧内边距 */
     .sub-block[role="contentinfo"] { padding: 18px 24px; }
+      /* 手机端背景图 */
+     (max-width: 768px) {
+      body { background-image: url('background-mobile.webp'); }
+    }
   </style>
   <link rel="preconnect" href="https://umami.578113.xyz">
   <script defer src="https://umami.578113.xyz/script.js" data-website-id="d72bd4ca-e496-42b7-ae65-13424856f679"></script>
   <script src="umami.js"></script>
-</head>
+    <!-- MiSans 简繁中文 WebFont -->
+    <link rel="stylesheet" href="/fonts/misans-web-vf-font/MiSans.min.css">
+  </head>
 <body>
   <noscript>
     <div style="position:fixed;left:0;right:0;top:0;z-index:9999;background:#b55;color:#fff;text-align:center;padding:8px;font-size:13px;">本站内容依赖 JavaScript 渲染，请启用 JavaScript 后再访问。</div>
